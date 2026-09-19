@@ -1,41 +1,65 @@
 package com.example.contest_notifier_apk
 
-import androidx.compose.material3.Text
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.contest_notifier_apk.ui.theme.ContestnotifierapkTheme
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
+
         setContent {
             ContestnotifierapkTheme {
-                ContestNotifierScreen()
+                Column {
+                    NotificationCard(Notification("Leetcode", "weekly 123", 10))
+                }
+
             }
         }
     }
 }
+
+data class Notification(val platform: String, val title: String, val time: Int)
+@Composable
+fun NotificationCard(data: Notification) {
+    Column {
+        Text(data.platform, color = Color.Black)
+        Text(data.title, color = Color.Black)
+        Text(data.time.toString(), color = Color.Black)
+    }
+
+}
+
 @Composable
 fun ContestNotifierScreen() {
-    val numbers = listOf(1,2,3)
 
-    var currentIdx by remember {
-        mutableStateOf(0)
+    var remainingTime by remember {
+        mutableStateOf(10 * 60) // 10 minutes
     }
+
+    LaunchedEffect(Unit) {
+        while (remainingTime > 0) {
+            delay(1000)
+            remainingTime--
+        }
+    }
+
+    val minutes = remainingTime / 60
+    val seconds = remainingTime % 60
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -43,15 +67,22 @@ fun ContestNotifierScreen() {
     ) {
 
         Column {
+
             Text(
-                text = numbers[currentIdx].toString()
+                text = String.format(
+                    "%02d:%02d",
+                    minutes,
+                    seconds
+                ),
+                style = MaterialTheme.typography.headlineLarge
             )
+
             Button(
                 onClick = {
-                    currentIdx = (currentIdx + 1) % numbers.size
+                    remainingTime = 10 * 60
                 }
             ) {
-                Text(text = "click me")
+                Text("Restart")
             }
         }
     }
