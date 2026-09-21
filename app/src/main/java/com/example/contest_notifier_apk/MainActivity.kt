@@ -51,21 +51,26 @@ fun MyApp(modifier: Modifier = Modifier, names: List<String> = listOf("user 1", 
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
+    var expanded = remember { mutableStateOf(false)};
+    var extraPadding = if (expanded.value) 48.dp else 0.dp;
     Surface(
         color = MaterialTheme.colorScheme.secondary,
         modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
         Row(modifier = Modifier.padding(24.dp)) {
-            Column(modifier = Modifier.weight(1f)) {
+            Column(modifier = Modifier
+                .weight(1f)
+                .padding(extraPadding)
+            ) {
                 Text(text = "hello");
                 Text(text = name);
             }
             ElevatedButton(
                 onClick = {
-                    println("button clicked");
+                    expanded.value = !expanded.value;
                 }
             ) {
-                Text("show more");
+                Text(if (expanded.value) "show less..." else "show more...")
             }
         }
     }
