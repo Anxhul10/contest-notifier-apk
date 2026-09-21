@@ -1,5 +1,6 @@
 package com.example.contest_notifier_apk
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -72,7 +73,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         if (expanded.value) 48.dp else 0.dp,
     )
     Surface(
-        color = MaterialTheme.colorScheme.secondary,
+        color = MaterialTheme.colorScheme.primaryContainer,
         modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
         Row(modifier = Modifier.padding(24.dp)) {
@@ -94,7 +95,11 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true, widthDp = 320)
+@Preview(
+    showBackground = true,
+    widthDp = 320,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 fun GreetingPreview() {
     ContestnotifierapkTheme{
