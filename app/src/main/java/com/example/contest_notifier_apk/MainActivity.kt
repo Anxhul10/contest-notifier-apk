@@ -3,6 +3,7 @@ package com.example.contest_notifier_apk
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -65,7 +66,9 @@ fun Greetings(
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     var expanded = remember { mutableStateOf(false)};
-    var extraPadding = if (expanded.value) 48.dp else 0.dp;
+    var extraPadding = animateDpAsState(
+        if (expanded.value) 48.dp else 0.dp
+    )
     Surface(
         color = MaterialTheme.colorScheme.secondary,
         modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)
@@ -73,7 +76,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         Row(modifier = Modifier.padding(24.dp)) {
             Column(modifier = Modifier
                 .weight(1f)
-                .padding(extraPadding)
+                .padding(bottom = extraPadding.value)
             ) {
                 Text(text = "hello");
                 Text(text = name);
