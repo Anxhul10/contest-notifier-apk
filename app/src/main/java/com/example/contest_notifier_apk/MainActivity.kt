@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
@@ -74,7 +75,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     )
     Surface(
         color = MaterialTheme.colorScheme.primaryContainer,
-        modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+        modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp),
+        shape = RoundedCornerShape(25.dp)
     ) {
         Row(modifier = Modifier.padding(24.dp)) {
             Column(modifier = Modifier
