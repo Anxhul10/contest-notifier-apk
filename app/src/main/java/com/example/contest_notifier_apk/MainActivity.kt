@@ -48,15 +48,16 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ContestnotifierapkTheme {
-                SmallTopAppBarExample()
+                TopBar()
             }
         }
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SmallTopAppBarExample() {
+fun TopBar() {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -66,9 +67,13 @@ fun SmallTopAppBarExample() {
                 ),
                 title = {
                     Text("Contest Notifier")
+                },
+                actions = {
+                    Text("GitHub")
                 }
             )
         },
+
     ) {
         innerPadding ->
         MyApp(Modifier.padding((innerPadding)))
@@ -82,7 +87,7 @@ fun SmallTopAppBarExample() {
 @Composable
 fun TopBarPreview() {
     ContestnotifierapkTheme{
-        SmallTopAppBarExample()
+        TopBar()
     }
 }
 
@@ -103,7 +108,7 @@ fun MyApp(modifier: Modifier = Modifier, names: List<String> = listOf("user 1", 
 @Composable
 fun Greetings(
     modifier: Modifier = Modifier,
-    names: List<String> = List(1000) {"$it"}
+    names: List<String> = List(10) {"$it"}
 ) {
     LazyColumn() {
         items(items = names) {
@@ -119,7 +124,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     )
     Surface(
         color = MaterialTheme.colorScheme.primaryContainer,
-        modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp),
+        modifier = modifier.padding(vertical = 4.dp, horizontal = 2.dp),
         shape = RoundedCornerShape(15.dp)
     ) {
         Row(modifier = Modifier.padding(24.dp)) {
