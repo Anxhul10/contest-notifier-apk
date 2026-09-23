@@ -23,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,6 +35,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.contest_notifier_apk.ui.theme.ContestnotifierapkTheme
@@ -69,7 +71,15 @@ fun TopBar() {
                     Text("Contest Notifier")
                 },
                 actions = {
-                    Text("GitHub")
+                    IconButton(onClick = {
+                        println("github clicked")
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.github),
+                            tint = MaterialTheme.colorScheme.primary,
+                            contentDescription = "Current Speed",
+                        )
+                    }
                 }
             )
         },
