@@ -1,7 +1,10 @@
 package com.example.contest_notifier_apk
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.pdf.content.PdfPageGotoLinkContent
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -35,6 +38,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -63,6 +67,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar() {
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(
@@ -93,6 +98,12 @@ fun TopBar() {
                 actions = {
                     IconButton(onClick = {
                         println("github clicked")
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://github.com/Anxhul10")
+                        )
+
+                        context.startActivity(intent)
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.github),
