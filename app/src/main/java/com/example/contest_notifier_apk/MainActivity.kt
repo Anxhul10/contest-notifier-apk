@@ -36,8 +36,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.contest_notifier_apk.ui.theme.ContestnotifierapkTheme
 import com.example.contest_notifier_apk.ui.theme.Pink40
 import com.example.contest_notifier_apk.ui.theme.Purple40
@@ -68,7 +71,24 @@ fun TopBar() {
                     titleContentColor = Color.Black,
                 ),
                 title = {
-                    Text("Contest Notifier")
+                    Row() {
+                        Text(
+                            text = "Contest",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.5.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontFamily = FontFamily.Cursive
+                        )
+                        Text(
+                            text = " Notifier",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.5.sp,
+                            color = Color.Black,
+                            fontFamily = FontFamily.Cursive
+                        )
+                    }
                 },
                 actions = {
                     IconButton(onClick = {
