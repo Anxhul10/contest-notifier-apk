@@ -40,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,6 +48,10 @@ import com.example.contest_notifier_apk.ui.theme.ContestnotifierapkTheme
 import com.example.contest_notifier_apk.ui.theme.Pink40
 import com.example.contest_notifier_apk.ui.theme.Purple40
 import kotlinx.coroutines.delay
+import androidx.compose.ui.text.googlefonts.GoogleFont
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.googlefonts.Font
 
 class MainActivity : ComponentActivity() {
 
@@ -62,7 +65,22 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
+)
 
+val fontName = GoogleFont("Lobster Two")
+
+val fontFamily = FontFamily(
+    Font(
+        googleFont = fontName,
+        fontProvider = provider,
+        weight = FontWeight.Thin,
+        style = FontStyle.Italic
+    )
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,7 +101,7 @@ fun TopBar() {
                             fontWeight = FontWeight.Bold,
                             letterSpacing = 0.5.sp,
                             color = MaterialTheme.colorScheme.primary,
-                            fontFamily = FontFamily.Cursive
+                            fontFamily = fontFamily
                         )
                         Text(
                             text = " Notifier",
@@ -91,7 +109,7 @@ fun TopBar() {
                             fontWeight = FontWeight.Bold,
                             letterSpacing = 0.5.sp,
                             color = Color.Black,
-                            fontFamily = FontFamily.Cursive
+                            fontFamily = fontFamily
                         )
                     }
                 },
