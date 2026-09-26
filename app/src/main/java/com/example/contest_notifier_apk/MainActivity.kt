@@ -46,19 +46,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
-@Preview(
-    showBackground = true,
-    widthDp = 320,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun TopBarPreview() {
-    ContestnotifierapkTheme{
-        TopBar()
-    }
-}
-
 @Composable
 fun MyApp(modifier: Modifier = Modifier, names: List<String> = listOf("user 1", "user 2", "user 3")) {
     Surface (
@@ -73,3 +60,14 @@ fun MyApp(modifier: Modifier = Modifier, names: List<String> = listOf("user 1", 
     }
 }
 
+@Preview(
+    showBackground = true,
+    widthDp = 320,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun TopBarPreview() {
+    ContestnotifierapkTheme{
+        TopBar()
+    }
+}
