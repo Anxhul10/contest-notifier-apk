@@ -138,12 +138,12 @@ fun Greetings(
 ) {
     LazyColumn() {
         items(items = names) {
-            name -> Greeting(name = name)
+            name -> Card(name = name)
         }
     }
 }
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Card(name: String, modifier: Modifier = Modifier) {
     var expanded = remember { mutableStateOf(false)};
     var extraPadding = animateDpAsState(
         if (expanded.value) 48.dp else 0.dp,
@@ -180,6 +180,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     ContestnotifierapkTheme{
-        Greeting("Anshul")
+        Card("Anshul")
     }
 }
