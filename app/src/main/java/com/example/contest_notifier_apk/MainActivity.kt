@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.contest_notifier_apk.ui.components.Card
+import com.example.contest_notifier_apk.ui.components.CardWrapper
 import com.example.contest_notifier_apk.ui.theme.ContestnotifierapkTheme
 import com.example.contest_notifier_apk.ui.theme.Purple40
 import com.example.contest_notifier_apk.utils.fontFamily
@@ -72,14 +73,3 @@ fun MyApp(modifier: Modifier = Modifier, names: List<String> = listOf("user 1", 
     }
 }
 
-@Composable
-fun CardWrapper(
-    modifier: Modifier = Modifier,
-    names: List<String> = List(10) {"$it"}
-) {
-    LazyColumn() {
-        items(items = names) {
-            name -> Card(name = name)
-        }
-    }
-}
