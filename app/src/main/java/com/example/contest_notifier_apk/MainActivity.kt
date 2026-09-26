@@ -7,14 +7,11 @@ import androidx.compose.ui.platform.LocalContext
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,8 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.contest_notifier_apk.ui.components.Card
 import com.example.contest_notifier_apk.ui.theme.ContestnotifierapkTheme
 import com.example.contest_notifier_apk.ui.theme.Purple40
 import com.example.contest_notifier_apk.utils.fontFamily
@@ -140,46 +137,5 @@ fun CardWrapper(
         items(items = names) {
             name -> Card(name = name)
         }
-    }
-}
-@Composable
-fun Card(name: String, modifier: Modifier = Modifier) {
-    var expanded = remember { mutableStateOf(false)};
-    var extraPadding = animateDpAsState(
-        if (expanded.value) 48.dp else 0.dp,
-    )
-    Surface(
-        color = MaterialTheme.colorScheme.primaryContainer,
-        modifier = modifier.padding(vertical = 4.dp, horizontal = 6.dp),
-        shape = RoundedCornerShape(15.dp)
-    ) {
-        Row(modifier = Modifier.padding(24.dp)) {
-            Column(modifier = Modifier
-                .weight(1f)
-                .padding(bottom = extraPadding.value)
-            ) {
-                Text(text = "hello");
-                Text(text = name);
-            }
-            ElevatedButton(
-                onClick = {
-                    expanded.value = !expanded.value;
-                }
-            ) {
-                Text(if (expanded.value) "show less..." else "show more...")
-            }
-        }
-    }
-}
-
-@Preview(
-    showBackground = true,
-    widthDp = 320,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun GreetingPreview() {
-    ContestnotifierapkTheme{
-        Card("Anshul")
     }
 }
