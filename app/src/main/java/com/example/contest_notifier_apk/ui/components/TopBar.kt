@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.contest_notifier_apk.MyApp
+import com.example.contest_notifier_apk.ContestList
 import com.example.contest_notifier_apk.R
 import com.example.contest_notifier_apk.ui.theme.Purple40
 import com.example.contest_notifier_apk.utils.fontFamily
@@ -77,6 +77,6 @@ fun TopBar() {
 
         ) {
             innerPadding ->
-        MyApp(Modifier.padding((innerPadding)))
+        ContestList(Modifier.padding((innerPadding)))
     }
 }
