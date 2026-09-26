@@ -24,8 +24,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+data class ContestData(val title: String, val platform: String, val contestTime: Int)
+
 @Composable
-fun ContestList(modifier: Modifier = Modifier, names: List<String> = listOf("contest 1", "contest 2", "contest 3", "contest 4", "contest 5", "contest 6", "contest 7", "contest 8", "contest 9")) {
+fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = listOf(
+    ContestData("contest 1", "codeforces", 100)
+)) {
     Surface (
         modifier = modifier,
         color = MaterialTheme.colorScheme.background
