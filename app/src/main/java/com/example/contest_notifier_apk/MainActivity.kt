@@ -29,7 +29,9 @@ data class ContestData(val title: String, val platform: String, val contestTime:
 
 @Composable
 fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = listOf(
-    ContestData("contest 1", "codeforces", 100)
+    ContestData("contest 1", "codeforces", 100),
+    ContestData("contest 2", "LeetCode", 1000),
+    ContestData("contest 3", "codechef", 10000)
 )) {
     Surface (
         modifier = modifier,

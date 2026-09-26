@@ -13,7 +13,11 @@ fun CardWrapper(
 ) {
     LazyColumn() {
         items(items = Contests) {
-                Contest -> Card(name = Contest.title)
+                Contest -> Card(
+                    title = Contest.title,
+                    platform = Contest.platform,
+                    contestTime = Contest.contestTime
+                )
         }
     }
 }

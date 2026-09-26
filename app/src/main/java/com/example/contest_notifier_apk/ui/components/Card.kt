@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Card(name: String, modifier: Modifier = Modifier) {
+fun Card(title: String,platform: String, contestTime: Int, modifier: Modifier = Modifier) {
     var expanded = remember { mutableStateOf(false)};
     var extraPadding = animateDpAsState(
         if (expanded.value) 48.dp else 0.dp,
@@ -31,7 +31,9 @@ fun Card(name: String, modifier: Modifier = Modifier) {
                 .weight(1f)
                 .padding(bottom = extraPadding.value)
             ) {
-                Text(text = name);
+                Text(text = title);
+                Text(text = platform);
+                Text(text = contestTime.toString())
             }
             ElevatedButton(
                 onClick = {
