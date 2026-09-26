@@ -31,7 +31,6 @@ fun Card(name: String, modifier: Modifier = Modifier) {
                 .weight(1f)
                 .padding(bottom = extraPadding.value)
             ) {
-                Text(text = "hello");
                 Text(text = name);
             }
             ElevatedButton(
