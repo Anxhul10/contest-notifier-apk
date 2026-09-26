@@ -125,14 +125,14 @@ fun MyApp(modifier: Modifier = Modifier, names: List<String> = listOf("user 1", 
     ) {
         Column () {
             for(name in names) {
-                Greetings(modifier)
+                CardWrapper(modifier)
             }
         }
     }
 }
 
 @Composable
-fun Greetings(
+fun CardWrapper(
     modifier: Modifier = Modifier,
     names: List<String> = List(10) {"$it"}
 ) {
@@ -150,7 +150,7 @@ fun Card(name: String, modifier: Modifier = Modifier) {
     )
     Surface(
         color = MaterialTheme.colorScheme.primaryContainer,
-        modifier = modifier.padding(vertical = 4.dp, horizontal = 2.dp),
+        modifier = modifier.padding(vertical = 4.dp, horizontal = 6.dp),
         shape = RoundedCornerShape(15.dp)
     ) {
         Row(modifier = Modifier.padding(24.dp)) {
