@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun CardWrapper(
     modifier: Modifier = Modifier,
-    names: List<String> = List(10) {"$it"}
+    names: List<String>
 ) {
     LazyColumn() {
         items(items = names) {
