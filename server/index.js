@@ -58,10 +58,30 @@ app.get('/api/leetcode', async (req, res) => {
         contest["relativeTimeSeconds"] = currentTime-contest["startTime"];
         upcomingContests.result.push(contest);
     }
-    
     res.send(upcomingContests);
 });
 
+app.get('/api/codechef', (req, res) => {
+    let upcomingContests = {
+        status: "Ok",
+        result: []
+    }
+
+    https.get("https://www.codechef.com/api/list/contests/all?sort_by=START&sorting_order=asc&offset=0&mode=all", (apiRes) => {
+        
+        let body = "";
+
+        apiRes.on("data", chunk => body+=chunk);
+
+        apiRes.on("end", () => {
+            const data = JSON.parse(body);
+            for(const contest of data.future_contests) {
+                upcomingContests.result.push(contest);
+            }
+            res.send(upcomingContests);
+        })
+    })
+})
 
 app.listen(port, ()=> {
     console.log(`server started at http://localhost:${port}`);
