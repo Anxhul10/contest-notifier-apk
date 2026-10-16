@@ -1,6 +1,7 @@
 import express from "express";
 import "dotenv/config";
 import https from "node:https";
+import { gql, request } from 'graphql-request'
 
 const app = express();
 const port = process.env.PORT;
@@ -26,15 +27,41 @@ app.get("/api/codeforces", (req, res) => {
             const data = JSON.parse(body);
             for(const contest of data.result) {
                 if(contest.phase === "BEFORE") {
-                    console.log(contest);
                     upcomingContests.result.push(contest);
-                    console.log(upcomingContests.result.length)
                 }
             }
             res.send(upcomingContests);
         })
     })
 })
+
+
+app.get('/api/leetcode', async (req, res) => {
+    let upcomingContests = {
+        status: "Ok",
+        result: []
+    }
+    const currentTime = Math.floor(Date.now()/1000);
+
+    const query = `
+        {
+            contestV2UpcomingContests {
+                title
+                startTime
+                duration
+            }
+        }
+    `
+    const contests = await request('https://leetcode.com/graphql/', query);
+    
+    for(const contest of contests.contestV2UpcomingContests) {
+        contest["relativeTimeSeconds"] = currentTime-contest["startTime"];
+        upcomingContests.result.push(contest);
+    }
+    
+    res.send(upcomingContests);
+});
+
 
 app.listen(port, ()=> {
     console.log(`server started at http://localhost:${port}`);
