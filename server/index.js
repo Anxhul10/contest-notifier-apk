@@ -56,6 +56,10 @@ app.get('/api/leetcode', async (req, res) => {
     
     for(const contest of contests.contestV2UpcomingContests) {
         contest["relativeTimeSeconds"] = currentTime-contest["startTime"];
+        contest.durationSeconds = contest.duration;
+        contest.startTimeSeconds = contest.startTime;
+        delete contest.duration;
+        delete contest.startTime;
         upcomingContests.result.push(contest);
     }
     res.send(upcomingContests);
@@ -76,6 +80,8 @@ app.get('/api/codechef', (req, res) => {
         apiRes.on("end", () => {
             const data = JSON.parse(body);
             for(const contest of data.future_contests) {
+                contest.durationSeconds = contest.contest_duration*60;
+                delete contest.contest_duration;
                 upcomingContests.result.push(contest);
             }
             res.send(upcomingContests);
