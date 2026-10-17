@@ -36,6 +36,8 @@ android {
 }
 
 dependencies {
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("androidx.compose.ui:ui-text-google-fonts:1.12.1")
     implementation(platform(libs.androidx.compose.bom))
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
