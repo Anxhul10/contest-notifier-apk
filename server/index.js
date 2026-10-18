@@ -60,6 +60,7 @@ app.get('/api/leetcode', async (req, res) => {
         contest.startTimeSeconds = contest.startTime;
         delete contest.duration;
         delete contest.startTime;
+        contest["name"] = contest.title;
         upcomingContests.result.push(contest);
     }
     res.send(upcomingContests);
@@ -82,6 +83,7 @@ app.get('/api/codechef', (req, res) => {
             for(const contest of data.future_contests) {
                 contest.durationSeconds = contest.contest_duration*60;
                 delete contest.contest_duration;
+                contest["name"] = contest.contest_name;
                 upcomingContests.result.push(contest);
             }
             res.send(upcomingContests);
