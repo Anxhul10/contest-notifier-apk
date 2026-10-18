@@ -1,5 +1,6 @@
 package com.example.contest_notifier_apk
 
+import android.R
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 data class ContestRes(
+    val name: String,
     val durationSeconds: Int,
     val startTimeSeconds: Long,
     val relativeTimeSeconds: Long
@@ -56,19 +58,27 @@ class MainActivity : ComponentActivity() {
         }
 
         lifecycleScope.launch {
-            try {
-                val res = api.getData("codeforces")
+            val platforms = listOf(
+                "leetcode",
+                "codeforces",
+                "codechef"
+            )
 
-                Log.d("API", "status: ${res.status}")
+            for(platform in platforms) {
+                try {
+                    val res = api.getData(platform);
 
-                res.result.forEach { contest ->
-                    Log.d(
-                        "API",
-                        "duration: ${contest.durationSeconds}, startTime: ${contest.startTimeSeconds}, relativeTime: ${contest.relativeTimeSeconds}"
+                    res.result.forEach {
+                        contest ->
+
+                        Log.d(
+                            "API",
+                            "name: ${contest.name}, duration: ${contest.durationSeconds}, startTime: ${contest.startTimeSeconds}, relativeTime: ${contest.relativeTimeSeconds}"
                         )
+                    }
+                } catch (e: Exception) {
+                    Log.e("API", "Error: ${e.message}");
                 }
-            } catch (e: Exception) {
-                Log.e("API", "Error: ${e.message}")
             }
         }
     }
