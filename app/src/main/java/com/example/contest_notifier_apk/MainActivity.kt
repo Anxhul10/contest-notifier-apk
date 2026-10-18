@@ -1,5 +1,5 @@
 package com.example.contest_notifier_apk
-
+import androidx.compose.runtime.mutableStateListOf
 import android.R
 import android.content.res.Configuration
 import android.os.Bundle
@@ -41,6 +41,7 @@ interface APIService {
         @Path("platform") platform: String
     ): Contests
 }
+data class ContestData(val name: String, val platform: String, val contestTime: Int)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,10 +51,10 @@ class MainActivity : ComponentActivity() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(APIService::class.java)
-
+        val contestStorage = mutableStateListOf<ContestData>();
         setContent {
             ContestnotifierapkTheme {
-                TopBar()
+                TopBar(contestStorage)
             }
         }
 
@@ -71,10 +72,12 @@ class MainActivity : ComponentActivity() {
                     res.result.forEach {
                         contest ->
 
-                        Log.d(
-                            "API",
-                            "name: ${contest.name}, duration: ${contest.durationSeconds}, startTime: ${contest.startTimeSeconds}, relativeTime: ${contest.relativeTimeSeconds}"
+                        val tmpData = ContestData(
+                            name = contest.name,
+                            platform = platform,
+                            contestTime = contest.durationSeconds
                         )
+                        contestStorage.add(tmpData);
                     }
                 } catch (e: Exception) {
                     Log.e("API", "Error: ${e.message}");
@@ -84,11 +87,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-data class ContestData(val name: String, val platform: String, val contestTime: Int)
 
 @Composable
-fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = listOf(
-)) {
+fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyList()) {
     Surface (
         modifier = modifier,
         color = MaterialTheme.colorScheme.background
@@ -96,17 +97,5 @@ fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = listOf
         Column () {
             CardWrapper(modifier, names)
         }
-    }
-}
-
-@Preview(
-    showBackground = true,
-    widthDp = 320,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun TopBarPreview() {
-    ContestnotifierapkTheme{
-        TopBar()
     }
 }
