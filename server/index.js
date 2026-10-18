@@ -67,6 +67,8 @@ app.get('/api/leetcode', async (req, res) => {
 });
 
 app.get('/api/codechef', (req, res) => {
+    const currentTime = Math.floor(Date.now()/1000);
+
     let upcomingContests = {
         status: "Ok",
         result: []
@@ -82,6 +84,10 @@ app.get('/api/codechef', (req, res) => {
             const data = JSON.parse(body);
             for(const contest of data.future_contests) {
                 contest.durationSeconds = contest.contest_duration*60;
+                const startTime = Math.floor(
+                    new Date(contest.contest_start_date_iso).getTime() / 1000
+                );
+                contest["relativeTimeSeconds"] = currentTime-startTime;
                 delete contest.contest_duration;
                 contest["name"] = contest.contest_name;
                 upcomingContests.result.push(contest);
