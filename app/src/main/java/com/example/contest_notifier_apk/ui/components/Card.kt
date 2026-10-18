@@ -13,7 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.unit.dp
+import com.example.contest_notifier_apk.utils.fontFamily
 
 @Composable
 fun Card(title: String,platform: String, contestTime: Int,relativeTimeSeconds: Long, modifier: Modifier = Modifier) {
@@ -31,17 +35,18 @@ fun Card(title: String,platform: String, contestTime: Int,relativeTimeSeconds: L
                 .weight(1f)
                 .padding(bottom = extraPadding.value)
             ) {
-                Text(text = title);
-                Text(text = platform);
-                Text(text = contestTime.toString())
+                Text(text = title, fontWeight = FontWeight.ExtraBold);
+                val hr = contestTime / (60*60);
+                Text(text = hr.toString()+" hr", fontWeight = FontWeight.ExtraLight, fontStyle = FontStyle.Italic)
                 Text(text = relativeTimeSeconds.toString())
             }
             ElevatedButton(
                 onClick = {
-                    expanded.value = !expanded.value;
+                    expanded.value = expanded.value;
                 }
             ) {
-                Text(if (expanded.value) "show less..." else "show more...")
+                Text(platform);
+//                Text(if (expanded.value) "show less..." else "show more...")
             }
         }
     }
