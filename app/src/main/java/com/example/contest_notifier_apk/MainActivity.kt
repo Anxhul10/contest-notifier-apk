@@ -41,7 +41,7 @@ interface APIService {
         @Path("platform") platform: String
     ): Contests
 }
-data class ContestData(val name: String, val platform: String, val contestTime: Int)
+data class ContestData(val name: String, val platform: String, val contestTime: Int, val relativeTimeSeconds: Long)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +75,8 @@ class MainActivity : ComponentActivity() {
                         val tmpData = ContestData(
                             name = contest.name,
                             platform = platform,
-                            contestTime = contest.durationSeconds
+                            contestTime = contest.durationSeconds,
+                            relativeTimeSeconds = contest.relativeTimeSeconds
                         )
                         contestStorage.add(tmpData);
                     }

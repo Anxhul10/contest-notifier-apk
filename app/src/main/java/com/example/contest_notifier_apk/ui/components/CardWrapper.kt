@@ -16,7 +16,8 @@ fun CardWrapper(
                 Contest -> Card(
                     title = Contest.name,
                     platform = Contest.platform,
-                    contestTime = Contest.contestTime
+                    contestTime = Contest.contestTime,
+                    relativeTimeSeconds = Contest.relativeTimeSeconds
                 )
         }
     }
