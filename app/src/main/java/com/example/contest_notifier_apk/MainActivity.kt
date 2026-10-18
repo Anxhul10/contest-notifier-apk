@@ -84,13 +84,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-data class ContestData(val title: String, val platform: String, val contestTime: Int)
+data class ContestData(val name: String, val platform: String, val contestTime: Int)
 
 @Composable
 fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = listOf(
-    ContestData("contest 1", "codeforces", 100),
-    ContestData("contest 2", "LeetCode", 1000),
-    ContestData("contest 3", "codechef", 10000)
 )) {
     Surface (
         modifier = modifier,
