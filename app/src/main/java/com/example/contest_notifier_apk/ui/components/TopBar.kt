@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.contest_notifier_apk.ContestData
 import com.example.contest_notifier_apk.ContestList
 import com.example.contest_notifier_apk.R
 import com.example.contest_notifier_apk.ui.theme.Purple40
@@ -26,7 +27,7 @@ import com.example.contest_notifier_apk.utils.fontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar() {
+fun TopBar(contestStorage: List<ContestData>) {
     val context = LocalContext.current
     Scaffold(
         topBar = {
@@ -77,6 +78,6 @@ fun TopBar() {
 
         ) {
             innerPadding ->
-        ContestList(Modifier.padding((innerPadding)))
+        ContestList(Modifier.padding((innerPadding)), contestStorage)
     }
 }
