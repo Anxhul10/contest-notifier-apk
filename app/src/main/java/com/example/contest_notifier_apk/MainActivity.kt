@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
             .build()
             .create(APIService::class.java)
         val contestStorage = mutableStateListOf<ContestData>();
-
+        val tmpContestStorage = mutableListOf<ContestData>();
         setContent {
             ContestnotifierapkTheme {
                 TopBar(contestStorage)
@@ -79,13 +79,13 @@ class MainActivity : ComponentActivity() {
                             contestTime = contest.durationSeconds,
                             relativeTimeSeconds = contest.relativeTimeSeconds
                         )
-                        contestStorage.add(tmpData);
+                        tmpContestStorage.add(tmpData);
                     }
                 } catch (e: Exception) {
                     Log.e("API", "Error: ${e.message}");
                 }
             }
-            val sortedOrder = contestStorage
+            val sortedOrder = tmpContestStorage
                 .filter {
                     it.relativeTimeSeconds <= 0
                 }
