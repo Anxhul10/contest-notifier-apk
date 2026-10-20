@@ -1,16 +1,24 @@
+
 package com.example.contest_notifier_apk.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Light mode
+val LightBlue = Color(0xFFD7EFFE) // Your original light blue
+val LightBackground = Color(0xFFF5F9FC)
+val LightSurface = Color(0xFFFFFFFF)
+val LightPrimary = Color(0xFF245A81)
+val LightText = Color(0xFF172B3A)
+val LightCard = LightBlue
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Dark mode
+val DarkBackground = Color(0xFF101820)
+val DarkSurface = Color(0xFF1B2836)
+val DarkPrimary = Color(0xFF90CAF9)
+val DarkText = Color(0xFFE5EDF5)
+val DarkCard = Color(0xFF22374A)
 
+// Optional accent colors
 val Navy = Color(0xFF073042)
 val Blue = Color(0xFF4285F4)
-val LightBlue = Color(0xFFD7EFFE)
 val Chartreuse = Color(0xFFEFF7CF)
