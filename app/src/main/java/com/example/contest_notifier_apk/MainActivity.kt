@@ -54,7 +54,7 @@ interface APIService {
     @GET("health")
     suspend fun checkHealth(): Health
 }
-data class ContestData(val name: String, val platform: String, val contestTime: Int, val relativeTimeSeconds: Long)
+data class ContestData(val name: String, val platform: String, val contestTime: Int, val relativeTimeSeconds: Long, val startTimeSeconds: Long)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,7 +116,8 @@ class MainActivity : ComponentActivity() {
                             name = contest.name,
                             platform = platform,
                             contestTime = contest.durationSeconds,
-                            relativeTimeSeconds = contest.relativeTimeSeconds
+                            relativeTimeSeconds = contest.relativeTimeSeconds,
+                            startTimeSeconds = System.currentTimeMillis()/1000-contest.relativeTimeSeconds
                         )
                         tmpContestStorage.add(tmpData);
                     }
