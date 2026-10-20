@@ -18,7 +18,7 @@ app.get("/api/codeforces", (req, res) => {
     }
 
     https.get("https://codeforces.com/api/contest.list", (apiRes) =>{
-
+        
         let body = "";
 
         apiRes.on("data", chunk => body+=chunk);
@@ -97,6 +97,6 @@ app.get('/api/codechef', (req, res) => {
     })
 })
 
-app.listen(port, "0.0.0.0", ()=> {
+app.listen(port, ()=> {
     console.log(`server started at http://localhost:${port}`);
 });

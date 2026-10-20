@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.example.contest_notifier_apk.ContestData
 import com.example.contest_notifier_apk.ContestList
 import com.example.contest_notifier_apk.R
+import com.example.contest_notifier_apk.ui.theme.Purple40
 import com.example.contest_notifier_apk.utils.fontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,11 +33,11 @@ fun TopBar(contestStorage: List<ContestData>) {
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = Purple40,
                     titleContentColor = Color.Black,
                 ),
                 title = {
-                    Row {
+                    Row() {
                         Text(
                             text = "Contest",
                             fontSize = 20.sp,
@@ -50,7 +51,7 @@ fun TopBar(contestStorage: List<ContestData>) {
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             letterSpacing = 0.5.sp,
-                            color = MaterialTheme.colorScheme.onSurface,
+                            color = Color.Black,
                             fontFamily = fontFamily
                         )
                     }
