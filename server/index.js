@@ -97,6 +97,7 @@ app.get('/api/codechef', (req, res) => {
     })
 })
 
-app.listen(port, ()=> {
+// allow other device to connect to this device
+app.listen(port, "0.0.0.0", ()=> {
     console.log(`server started at http://localhost:${port}`);
 });
