@@ -38,12 +38,17 @@ data class Contests(
     val status: String,
     val result: List<ContestRes>
 )
+data class Health(
+    val status: String
+)
 interface APIService {
     @GET("api/{platform}")
-
     suspend fun getData(
         @Path("platform") platform: String
     ): Contests
+
+    @GET("health")
+    suspend fun checkHealth(): Health
 }
 data class ContestData(val name: String, val platform: String, val contestTime: Int, val relativeTimeSeconds: Long)
 class MainActivity : ComponentActivity() {
@@ -64,6 +69,32 @@ class MainActivity : ComponentActivity() {
         }
 
         lifecycleScope.launch {
+
+            var isReady = false;
+
+            repeat(10) {
+                attempt ->
+                try {
+                    val health = api.checkHealth();
+                    if(health.status.equals("ok", ignoreCase = true)) {
+                        isReady = true;
+                        Log.d("API", "Health: ${health.status}");
+                        return@repeat;
+                    } else {
+                        Log.d("API", "Health check returned: ${health.status}");
+                    }
+                } catch(e: Exception) {
+                    Log.e("API", "Health attempt ${attempt+1} : ${e.message}");
+                }
+                if(!isReady && attempt < 9) {
+                    kotlinx.coroutines.delay(3000);
+                }
+            }
+            if (!isReady) {
+                Log.e("API", "Server unavailable after 10 attempts")
+                return@launch
+            }
+
             val platforms = listOf(
                 "leetcode",
                 "codeforces",
@@ -75,7 +106,7 @@ class MainActivity : ComponentActivity() {
                     val res = api.getData(platform);
 
                     res.result.forEach {
-                        contest ->
+                            contest ->
 
                         val tmpData = ContestData(
                             name = contest.name,
@@ -96,10 +127,26 @@ class MainActivity : ComponentActivity() {
                 .sortedByDescending {
                     it.relativeTimeSeconds
                 }
+            contestStorage.forEach { contest ->
+                Log.d(
+                    "ContestNotifier",
+                    "Name: ${contest.name}, Platform: ${contest.platform}, " +
+                            "Contest Time: ${contest.contestTime}, " +
+                            "Relative Time: ${contest.relativeTimeSeconds}"
+                )
+            }
 
             contestStorage.clear();
             contestStorage.addAll(sortedOrder);
-
+            contestStorage.forEach { contest ->
+                Log.d(
+                    "contestNotifier",
+                    "Name: ${contest.name}" +
+                            "platform: ${contest.platform}" +
+                            "contest time: ${contest.contestTime}"+
+                            "relative time: ${contest.relativeTimeSeconds}"
+                )
+            }
         }
     }
 }
