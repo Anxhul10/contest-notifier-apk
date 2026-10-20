@@ -78,14 +78,10 @@ class MainActivity : ComponentActivity() {
         val schedular = AndroidAlarmScheduler(this)
         var alarmItem: AlarmItem? = null;
 
-        alarmItem = AlarmItem(
-            time = LocalDateTime.now().plusSeconds(5),
-            message = "hii there"
-        )
-
         alarmItem?.let(schedular::schedule)
 
         val api: APIService = Retrofit.Builder()
+//            .baseUrl("http://127.0.0.1:3000/")
             .baseUrl("https://contest-notifier-apk.onrender.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -162,6 +158,28 @@ class MainActivity : ComponentActivity() {
             contestStorage.clear();
             contestStorage.addAll(sortedOrder);
             saveContests(this@MainActivity, contestStorage);
+//            usage
+//            alarmItem = AlarmItem(
+//                time = LocalDateTime.now().plusSeconds(5),
+//                message = "hii there"
+//            )
+
+            val scheduler = AndroidAlarmScheduler(this@MainActivity)
+
+            contestStorage.forEach { contest ->
+                val alarmItem = AlarmItem(
+                    time = LocalDateTime.now()
+                        .plusSeconds(
+                            contest.startTimeSeconds -
+                                    System.currentTimeMillis() / 1000 - 600
+                        ),
+                    message = "${contest.name} starts in 10 minutes!"
+                )
+
+                if (alarmItem.time.isAfter(LocalDateTime.now())) {
+                    scheduler.schedule(alarmItem)
+                }
+            }
             contestStorage.forEach { contest ->
                 Log.d(
                     "contestNotifier",
@@ -205,7 +223,7 @@ fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyL
         Column (
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+//            verticalArrangement = Arrangement.Center
         ) {
             if(names.isEmpty()) {
                 CircularProgressIndicator();
