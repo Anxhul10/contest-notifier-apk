@@ -33,6 +33,9 @@ import com.google.gson.reflect.TypeToken
 import androidx.core.content.edit
 import com.example.contest_notifier_apk.utils.AlarmItem
 import com.example.contest_notifier_apk.utils.AndroidAlarmScheduler
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 
 data class ContestRes(
     val name: String,
@@ -61,6 +64,16 @@ data class ContestData(val name: String, val platform: String, val contestTime: 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                1001
+            )
+        }
 
         val schedular = AndroidAlarmScheduler(this)
         var alarmItem: AlarmItem? = null;
