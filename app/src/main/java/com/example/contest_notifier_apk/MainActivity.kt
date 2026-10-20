@@ -20,12 +20,16 @@ import androidx.lifecycle.lifecycleScope
 import com.example.contest_notifier_apk.ui.components.CardWrapper
 import com.example.contest_notifier_apk.ui.theme.ContestnotifierapkTheme
 import com.example.contest_notifier_apk.ui.components.TopBar
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
 import retrofit2.http.Path
+import android.content.Context
+import com.google.gson.reflect.TypeToken
+import androidx.core.content.edit
 
 data class ContestRes(
     val name: String,
@@ -127,17 +131,10 @@ class MainActivity : ComponentActivity() {
                 .sortedByDescending {
                     it.relativeTimeSeconds
                 }
-            contestStorage.forEach { contest ->
-                Log.d(
-                    "ContestNotifier",
-                    "Name: ${contest.name}, Platform: ${contest.platform}, " +
-                            "Contest Time: ${contest.contestTime}, " +
-                            "Relative Time: ${contest.relativeTimeSeconds}"
-                )
-            }
 
             contestStorage.clear();
             contestStorage.addAll(sortedOrder);
+            saveContests(this@MainActivity, contestStorage);
             contestStorage.forEach { contest ->
                 Log.d(
                     "contestNotifier",
@@ -151,7 +148,27 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+fun saveContests(context: Context, contests: List<ContestData>) {
+    val json = Gson().toJson(contests);
 
+    context.getSharedPreferences("contest_cache", Context.MODE_PRIVATE)
+        .edit {
+            putString("contests", json)
+        }
+}
+
+fun loadContests(context: Context): List<ContestData> {
+    val prefs = context.getSharedPreferences(
+        "contest_cache",
+        Context.MODE_PRIVATE
+    )
+
+    val json = prefs.getString("contests", null) ?: return emptyList();
+
+    val type = object: TypeToken<List<ContestData>>() {}.type
+
+    return Gson().fromJson(json, type);
+}
 @Composable
 fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyList()) {
     Surface (
