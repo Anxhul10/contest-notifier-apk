@@ -2,6 +2,7 @@ package com.example.contest_notifier_apk
 import androidx.compose.runtime.mutableStateListOf
 import android.R
 import android.content.res.Configuration
+import java.time.LocalDateTime
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -30,6 +31,8 @@ import retrofit2.http.Path
 import android.content.Context
 import com.google.gson.reflect.TypeToken
 import androidx.core.content.edit
+import com.example.contest_notifier_apk.utils.AlarmItem
+import com.example.contest_notifier_apk.utils.AndroidAlarmScheduler
 
 data class ContestRes(
     val name: String,
@@ -58,6 +61,16 @@ data class ContestData(val name: String, val platform: String, val contestTime: 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val schedular = AndroidAlarmScheduler(this)
+        var alarmItem: AlarmItem? = null;
+
+        alarmItem = AlarmItem(
+            time = LocalDateTime.now().plusSeconds(5),
+            message = "hii there"
+        )
+
+        alarmItem?.let(schedular::schedule)
 
         val api: APIService = Retrofit.Builder()
             .baseUrl("https://contest-notifier-apk.onrender.com/")
