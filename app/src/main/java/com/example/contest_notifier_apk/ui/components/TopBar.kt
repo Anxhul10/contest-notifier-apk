@@ -36,7 +36,7 @@ fun TopBar(contestStorage: List<ContestData>) {
                     titleContentColor = Color.Black,
                 ),
                 title = {
-                    Row() {
+                    Row {
                         Text(
                             text = "Contest",
                             fontSize = 20.sp,
@@ -50,7 +50,7 @@ fun TopBar(contestStorage: List<ContestData>) {
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             letterSpacing = 0.5.sp,
-                            color = Color.Black,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontFamily = fontFamily
                         )
                     }
