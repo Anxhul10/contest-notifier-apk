@@ -29,7 +29,7 @@ I built **Contest Notifier** to solve this problem. It reminds me about upcoming
 
 Contest Notifier schedules a local notification on your device **10 minutes before a contest starts**, helping you remember to participate.
 
-![Contest Notifier notification](https://github.com/user-attachments/assets/3817381b-bbe7-4225-8951-91850d31d750)
+![Contest Notifier notification](https://github.com/user-attachments/assets/52a95a1a-0dbd-4400-a140-30441ba6aae8)
 
 ### Light Mode
 
