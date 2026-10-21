@@ -175,9 +175,20 @@ class MainActivity : ComponentActivity() {
                         ),
                     message = "${contest.name} starts in 10 minutes!"
                 )
+                val alarmItem2 = AlarmItem(
+                    time = LocalDateTime.now()
+                        .plusSeconds(
+                            contest.startTimeSeconds -
+                                    System.currentTimeMillis() / 1000 - 3600
+                        ),
+                    message = "${contest.name} starts in 1 hour!"
+                )
 
                 if (alarmItem.time.isAfter(LocalDateTime.now())) {
                     scheduler.schedule(alarmItem)
+                }
+                if(alarmItem2.time.isAfter(LocalDateTime.now())) {
+                    scheduler.schedule(alarmItem2);
                 }
             }
             contestStorage.forEach { contest ->
