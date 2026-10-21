@@ -6,6 +6,18 @@ import { gql, request } from 'graphql-request'
 const app = express();
 const port = process.env.PORT;
 
+function createTestContest(id, name, delaySeconds) {
+    const startTimeSeconds = Math.floor(Date.now() / 1000) + delaySeconds;
+
+    return {
+        id,
+        name,
+        durationSeconds: 7200,
+        startTimeSeconds,
+        relativeTimeSeconds: -delaySeconds
+    };
+}
+
 app.get("/health", (req, res) => {
 
     res.send({"status": "Ok"});
@@ -33,20 +45,8 @@ app.get("/api/codeforces", (req, res) => {
             const now = Math.floor(Date.now() / 1000);
             
             upcomingContests.result.push(
-                {
-                    id: -1,
-                    name: "Dummy Contest 10 min 20 sec",
-                    phase: "BEFORE",
-                    durationSeconds: 7200,
-                    startTimeSeconds: now + 620
-                },
-                {
-                    id: -2,
-                    name: "Dummy Contest 1 hour 20 sec",
-                    phase: "BEFORE",
-                    durationSeconds: 7200,
-                    startTimeSeconds: now + 3620
-                }
+                createTestContest(-1, "Dummy Contest 10 min 20 sec", 620),
+                createTestContest(-2, "Dummy Contest 1 hour 20 sec", 3620)
             );
             res.send(upcomingContests);
         })
