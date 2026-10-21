@@ -30,6 +30,8 @@ app.get("/api/codeforces", (req, res) => {
                     upcomingContests.result.push(contest);
                 }
             }
+            const now = Math.floor(Date.now() / 1000);
+            
             upcomingContests.result.push(
                 {
                     id: -1,
