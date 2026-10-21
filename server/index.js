@@ -30,6 +30,22 @@ app.get("/api/codeforces", (req, res) => {
                     upcomingContests.result.push(contest);
                 }
             }
+            upcomingContests.result.push(
+                {
+                    id: -1,
+                    name: "Dummy Contest 10 min 20 sec",
+                    phase: "BEFORE",
+                    durationSeconds: 7200,
+                    startTimeSeconds: now + 620
+                },
+                {
+                    id: -2,
+                    name: "Dummy Contest 1 hour 20 sec",
+                    phase: "BEFORE",
+                    durationSeconds: 7200,
+                    startTimeSeconds: now + 3620
+                }
+            );
             res.send(upcomingContests);
         })
     })
