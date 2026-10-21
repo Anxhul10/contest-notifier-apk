@@ -16,15 +16,20 @@ The app brings contest information from different competitive programming platfo
 > Contest Notifier fetches contest information whenever you open the app and schedules reminders locally on your device. It does not rely on a server continuously monitoring contests or sending push notifications.
 >
 > **Please open the app at least once a day** to refresh contest information and keep your upcoming contest reminders up to date.
+> 
+## Why I Built This
 
+Sometimes I remember that a coding contest is happening, but when the contest starts, I forget to participate because I'm busy with other things.
+
+I built **Contest Notifier** to solve this problem. It reminds me about upcoming contests so I can prepare and participate on time instead of missing them.
 
 ## Screenshots
 
 ### Notifications
 
-Contest Notifier schedules notifications on your device to remind you about upcoming contests.
+Contest Notifier schedules a local notification on your device **10 minutes before a contest starts**, helping you remember to participate.
 
-![App startup screen](https://github.com/user-attachments/assets/5e6daaf3-4fde-483f-b664-9e07d4598293)
+![Contest Notifier notification](https://github.com/user-attachments/assets/3817381b-bbe7-4225-8951-91850d31d750)
 
 ### Light Mode
 
