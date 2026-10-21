@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import java.time.ZoneId
+import android.os.Build
 class AndroidAlarmScheduler(
     private val context: Context
 ): AlarmScheduler {
@@ -16,7 +17,6 @@ class AndroidAlarmScheduler(
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             putExtra("EXTRA_MESSAGE", item.message)
         }
-    
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             item.hashCode(),
@@ -24,38 +24,29 @@ class AndroidAlarmScheduler(
             PendingIntent.FLAG_UPDATE_CURRENT or
                     PendingIntent.FLAG_IMMUTABLE
         )
-    
         val alarmTimeMillis = item.time
             .atZone(ZoneId.systemDefault())
             .toInstant()
             .toEpochMilli()
-    
-        Log.d(
-            "AlarmScheduler",
-            "Scheduling alarm: ${item.message}, " +
-                "time=${item.time}, millis=$alarmTimeMillis"
-        )
-    
-        if (alarmTimeMillis <= System.currentTimeMillis()) {
-            Log.w("AlarmScheduler", "Skipping alarm because its time has passed")
-            return
+        Log.d("AlarmReceiver", "Scheduling alarm for: ${item.time}")
+//        alarmManager.set(
+//            AlarmManager.RTC_WAKEUP,
+//            alarmTimeMillis,
+//            pendingIntent
+//        )
+        if(!alarmManager.canScheduleExactAlarms()) {
+            Log.w("Alarm Scheduler", "Exact alarm permission not granted");
+            return;
         }
-    
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S &&
-            !alarmManager.canScheduleExactAlarms()
-        ) {
-            Log.e(
-                "AlarmScheduler",
-                "Exact alarm access is not permitted"
+        try {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                alarmTimeMillis,
+                pendingIntent
             )
-            return
+        } catch(e: SecurityException) {
+            Log.e("Alarm Scheduler", "Security exception: ${e.message}");
         }
-    
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            alarmTimeMillis,
-            pendingIntent
-        )
     }
 
     override fun cancel(item: AlarmItem) {
