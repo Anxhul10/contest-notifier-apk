@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import com.example.contest_notifier_apk.R
 
 object NotificationHelper {
 
@@ -46,7 +47,7 @@ object NotificationHelper {
             context,
             CHANNEL_ID
         )
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle("Contest Notifier")
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
