@@ -1,13 +1,9 @@
 package com.example.contest_notifier_apk
 import androidx.compose.runtime.mutableStateListOf
-import android.R
-import android.content.res.Configuration
-import java.time.LocalDateTime
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -16,7 +12,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import com.example.contest_notifier_apk.ui.components.CardWrapper
 import com.example.contest_notifier_apk.ui.theme.ContestnotifierapkTheme
@@ -24,6 +19,7 @@ import com.example.contest_notifier_apk.ui.components.TopBar
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
+import java.time.LocalDateTime
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
@@ -175,6 +171,8 @@ class MainActivity : ComponentActivity() {
                         ),
                     message = "${contest.name} starts in 10 minutes!"
                 )
+                Log.d("alarm debug", "trigger time ${alarmItem.time}")
+                Log.d("alarm debug", "current time ${LocalDateTime.now()}")
                 val alarmItem2 = AlarmItem(
                     time = LocalDateTime.now()
                         .plusSeconds(
@@ -183,7 +181,6 @@ class MainActivity : ComponentActivity() {
                         ),
                     message = "${contest.name} starts in 1 hour!"
                 )
-
                 if (alarmItem.time.isAfter(LocalDateTime.now())) {
                     scheduler.schedule(alarmItem)
                 }
