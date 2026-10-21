@@ -60,7 +60,7 @@ fun TopBar(contestStorage: List<ContestData>) {
                         println("github clicked")
                         val intent = Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse("https://github.com/Anxhul10")
+                            Uri.parse("https://github.com/Anxhul10/contest-notifier-apk")
                         )
 
                         context.startActivity(intent)
