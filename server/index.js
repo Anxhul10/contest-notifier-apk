@@ -42,12 +42,12 @@ app.get("/api/codeforces", (req, res) => {
                     upcomingContests.result.push(contest);
                 }
             }
-            const now = Math.floor(Date.now() / 1000);
+            // const now = Math.floor(Date.now() / 1000);
             
-            upcomingContests.result.push(
-                createTestContest(-1, "Dummy Contest 10 min 20 sec", 620),
-                createTestContest(-2, "Dummy Contest 1 hour 20 sec", 3620)
-            );
+            // upcomingContests.result.push(
+            //     createTestContest(-1, "Dummy Contest 10 min 20 sec", 620),
+            //     createTestContest(-2, "Dummy Contest 1 hour 20 sec", 3620)
+            // );
             res.send(upcomingContests);
         })
     })
