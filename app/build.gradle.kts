@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -36,6 +37,11 @@ android {
 }
 
 dependencies {
+    val room_version = "3.0.3"
+
+    implementation("androidx.room3:room3-runtime:$room_version")
+    ksp("androidx.room:room-compiler:2.5.0")
+
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("androidx.compose.ui:ui-text-google-fonts:1.12.1")
