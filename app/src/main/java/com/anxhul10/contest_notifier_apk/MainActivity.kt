@@ -29,8 +29,10 @@ import androidx.core.content.edit
 import com.anxhul10.contest_notifier_apk.utils.AlarmItem
 import com.anxhul10.contest_notifier_apk.utils.AndroidAlarmScheduler
 import android.Manifest
+import android.R
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.compose.material3.Text
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
 import androidx.room3.Dao
@@ -130,11 +132,12 @@ class MainActivity : ComponentActivity() {
             Room.databaseBuilder<AppDatabase>(applicationContext, "database-name")
                 .setDriver(AndroidSQLiteDriver())
                 .build()
-        val contestDao = db.contestDao()
+        val contestDao = db.contestDao();
+        val updateAvailable = mutableStateOf(false);
 
         setContent {
             ContestnotifierapkTheme {
-                TopBar(contestLocalStorage, contestStorage.size == 0)
+                TopBar(contestLocalStorage, contestStorage.size == 0, updateAvailable)
             }
         }
 
@@ -304,7 +307,7 @@ fun loadContests(context: Context): List<ContestData> {
     return Gson().fromJson(json, type);
 }
 @Composable
-fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyList(), isLoading: Boolean) {
+fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyList(), isLoading: Boolean, updateAvailable: MutableState<Boolean>) {
     Surface (
         modifier = modifier,
         color = MaterialTheme.colorScheme.background
@@ -313,6 +316,9 @@ fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyL
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            if(updateAvailable.value) {
+                Text("Update Available!")
+            }
             if(names.isEmpty()) {
                 CircularProgressIndicator();
             } else {
