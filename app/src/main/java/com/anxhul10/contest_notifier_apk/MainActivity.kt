@@ -30,8 +30,11 @@ import com.anxhul10.contest_notifier_apk.utils.AlarmItem
 import com.anxhul10.contest_notifier_apk.utils.AndroidAlarmScheduler
 import android.Manifest
 import android.R
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +42,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -317,6 +321,7 @@ fun loadContests(context: Context): List<ContestData> {
 }
 @Composable
 fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyList(), isLoading: Boolean, updateAvailable: MutableState<Boolean>) {
+    val context = LocalContext.current
     Surface (
         modifier = modifier,
         color = MaterialTheme.colorScheme.background
@@ -328,7 +333,15 @@ fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyL
             if (updateAvailable.value) {
                 Surface(
                     color = if (isSystemInDarkTheme()) Color(0xFF203B3B) else Color(0xFFDCEFEA),
-                    modifier = Modifier.padding(vertical = 1.dp, horizontal = 6.dp),
+                    modifier = Modifier
+                        .padding(vertical = 1.dp, horizontal = 6.dp)
+                        .clickable{
+                            val intent = Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://github.com/Anxhul10/contest-notifier-apk/releases/latest")
+                            )
+                            context.startActivity(intent)
+                        },
                     shape = RoundedCornerShape(10.dp)
                 ) {
                     Row(
