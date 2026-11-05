@@ -19,7 +19,7 @@ class AndroidAlarmScheduler(
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            item.hashCode(),
+            item.id.hashCode(),
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or
                     PendingIntent.FLAG_IMMUTABLE
@@ -53,7 +53,7 @@ class AndroidAlarmScheduler(
         alarmManager.cancel(
             PendingIntent.getBroadcast(
                 context,
-                item.hashCode(),
+                item.id.hashCode(),
                 Intent(context, AlarmReceiver::class.java),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
