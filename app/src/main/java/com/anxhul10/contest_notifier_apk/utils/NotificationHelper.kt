@@ -1,4 +1,4 @@
-package com.example.contest_notifier_apk.utils
+package com.anxhul10.contest_notifier_apk.utils
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -9,7 +9,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.example.contest_notifier_apk.R
+import com.anxhul10.contest_notifier_apk.R
 
 object NotificationHelper {
 

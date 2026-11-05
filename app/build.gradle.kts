@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.contest_notifier_apk"
+    namespace = "com.anxhul10.contest_notifier_apk"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.contest_notifier_apk"
+        applicationId = "com.anxhul10.contest_notifier_apk"
         minSdk = 33
         targetSdk = 37
         versionCode = 1

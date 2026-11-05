@@ -1,5 +1,5 @@
 
-package com.example.contest_notifier_apk.utils
+package com.anxhul10.contest_notifier_apk.utils
 
 import android.content.BroadcastReceiver
 import android.content.Context

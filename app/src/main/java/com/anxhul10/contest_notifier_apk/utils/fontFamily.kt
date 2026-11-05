@@ -1,11 +1,11 @@
-package com.example.contest_notifier_apk.utils
+package com.anxhul10.contest_notifier_apk.utils
 
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
-import com.example.contest_notifier_apk.R
+import com.anxhul10.contest_notifier_apk.R
 
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
