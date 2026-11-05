@@ -51,6 +51,9 @@ interface ContestDao {
     @Query("SELECT * FROM contests WHERE id IN (:contestIds)")
     suspend fun loadAllContestByIds(contestIds: IntArray): List<Contest>
 
+    @Query("DELETE FROM contests")
+    suspend fun deleteAllContests()
+
     @Insert
     suspend fun insertAll(contests: List<Contest>)
 
@@ -222,9 +225,8 @@ class MainActivity : ComponentActivity() {
                     relativeTimeSeconds = data.relativeTimeSeconds
                 )
             }
-
+            contestDao.deleteAllContests();
             contestDao.insertAll(contestToSave);
-
             contestStorage.clear();
             contestStorage.addAll(sortedOrder);
             saveContests(this@MainActivity, contestStorage);
