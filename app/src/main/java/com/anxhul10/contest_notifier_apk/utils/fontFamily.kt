@@ -13,6 +13,37 @@ val provider = GoogleFont.Provider(
     certificates = R.array.com_google_android_gms_fonts_certs
 )
 
+val manrope = GoogleFont("Manrope")
+
+val headingFontFamily = FontFamily(
+    Font(
+        googleFont = manrope,
+        fontProvider = provider,
+        weight = FontWeight.Bold
+    ),
+    Font(
+        googleFont = manrope,
+        fontProvider = provider,
+        weight = FontWeight.SemiBold
+    )
+)
+
+// Body font
+val inter = GoogleFont("Inter")
+
+val bodyFontFamily = FontFamily(
+    Font(
+        googleFont = inter,
+        fontProvider = provider,
+        weight = FontWeight.Normal
+    ),
+    Font(
+        googleFont = inter,
+        fontProvider = provider,
+        weight = FontWeight.Medium
+    )
+)
+
 val fontName = GoogleFont("Lobster Two")
 
 val fontFamily = FontFamily(
