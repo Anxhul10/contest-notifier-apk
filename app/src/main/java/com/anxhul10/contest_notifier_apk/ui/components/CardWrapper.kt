@@ -17,9 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
-import com.anxhul10.contest_notifier_apk.utils.fontFamily
+import com.anxhul10.contest_notifier_apk.utils.bodyFontFamily
+import com.anxhul10.contest_notifier_apk.utils.headingFontFamily
 
 @Composable
 fun CardWrapper(
@@ -41,16 +41,20 @@ fun CardWrapper(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = headingFontFamily
                 )
 
                 Text(
                     text = "The server may take a little longer to respond after being inactive. Your saved contests are available while we fetch the latest updates.",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.ExtraLight
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 13.sp,
+                    lineHeight = 18.sp,
+                    fontWeight = FontWeight.Normal,
+                    fontFamily = bodyFontFamily
                 )
             }
         }
