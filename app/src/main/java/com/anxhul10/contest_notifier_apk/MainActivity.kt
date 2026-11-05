@@ -56,6 +56,7 @@ import androidx.room3.Database
 import androidx.room3.RoomDatabase
 import androidx.room3.Room
 import androidx.sqlite.driver.AndroidSQLiteDriver
+import com.anxhul10.contest_notifier_apk.utils.GithubApiService
 
 @Dao
 interface ContestDao {
@@ -146,7 +147,15 @@ class MainActivity : ComponentActivity() {
                 .setDriver(AndroidSQLiteDriver())
                 .build()
         val contestDao = db.contestDao();
-        val updateAvailable = mutableStateOf(true);
+        val updateAvailable = mutableStateOf(false);
+
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+        val githubRetrofit = Retrofit.Builder()
+            .baseUrl("https://api.github.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val githubApi = githubRetrofit.create(GithubApiService::class.java)
 
         setContent {
             ContestnotifierapkTheme {
@@ -156,6 +165,16 @@ class MainActivity : ComponentActivity() {
 
 
         lifecycleScope.launch {
+            try {
+                val release = githubApi.getLatestRelease()
+                val latestVersion = release.tag_name.removePrefix("v")
+
+                updateAvailable.value = (!(latestVersion == packageInfo.versionName))
+
+            } catch (e: Exception) {
+                Log.e("UpdateCheck", "Failed to check update", e)
+            }
+
             val getContestFromStorage = contestDao.getAllContests();
             for(contest in getContestFromStorage) {
                 tmpContestLocalStorage.add(
