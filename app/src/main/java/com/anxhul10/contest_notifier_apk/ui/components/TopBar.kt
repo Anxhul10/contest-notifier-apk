@@ -26,7 +26,7 @@ import com.anxhul10.contest_notifier_apk.utils.fontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(contestStorage: List<ContestData>) {
+fun TopBar(contestStorage: List<ContestData>, isLoading: Boolean) {
     val context = LocalContext.current
     Scaffold(
         topBar = {
@@ -77,6 +77,6 @@ fun TopBar(contestStorage: List<ContestData>) {
 
         ) {
             innerPadding ->
-        ContestList(Modifier.padding((innerPadding)), contestStorage)
+        ContestList(Modifier.padding((innerPadding)), contestStorage, isLoading)
     }
 }
