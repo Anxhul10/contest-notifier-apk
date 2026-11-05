@@ -31,7 +31,46 @@ import com.anxhul10.contest_notifier_apk.utils.AndroidAlarmScheduler
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
+import androidx.room3.ColumnInfo
+import androidx.room3.Dao
+import androidx.room3.Query
+import androidx.room3.Insert
+import androidx.room3.Delete
+import androidx.room3.Database
+import androidx.room3.RoomDatabase
+import androidx.room3.Room
+import androidx.sqlite.driver.AndroidSQLiteDriver
 
+@Dao
+interface ContestDao {
+    @Query("SELECT * FROM contests")
+    suspend fun getAllContests(): List<Contest>
+
+    @Query("SELECT * FROM contests WHERE id IN (:contestIds)")
+    suspend fun loadAllContestByIds(contestIds: IntArray): List<Contest>
+
+    @Insert
+    suspend fun insertAll(contests: List<Contest>)
+
+    @Delete
+    suspend fun delete(contest: Contest)
+}
+@Entity(tableName = "contests")
+data class Contest(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val name: String,
+    val durationSeconds: Int,
+    val startTimeSeconds: Long,
+    val platform: String
+//    val relativeTimeSeconds: Long
+)
+@Database(entities = [Contest::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun contestDao(): ContestDao
+}
 data class ContestRes(
     val name: String,
     val durationSeconds: Int,
@@ -88,9 +127,13 @@ class MainActivity : ComponentActivity() {
                 TopBar(contestStorage)
             }
         }
+        val db =
+            Room.databaseBuilder<AppDatabase>(applicationContext, "database-name")
+                .setDriver(AndroidSQLiteDriver())
+                .build()
+        val contestDao = db.contestDao()
 
         lifecycleScope.launch {
-
             var isReady = false;
 
             repeat(10) {
@@ -149,10 +192,22 @@ class MainActivity : ComponentActivity() {
                 .sortedByDescending {
                     it.relativeTimeSeconds
                 }
-
+            val contestToSave = sortedOrder.map {
+                data ->
+                Contest(
+                    name = data.name,
+                    durationSeconds = data.contestTime,
+                    startTimeSeconds = data.startTimeSeconds,
+                    platform = data.platform
+                )
+            }
+            contestDao.insertAll(contestToSave);
+            val tmp = contestDao.getAllContests();
+            Log.d("storage", "my storage: $tmp")
             contestStorage.clear();
             contestStorage.addAll(sortedOrder);
             saveContests(this@MainActivity, contestStorage);
+
 //            usage
 //            alarmItem = AlarmItem(
 //                time = LocalDateTime.now().plusSeconds(5),
