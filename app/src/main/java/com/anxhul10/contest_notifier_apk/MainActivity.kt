@@ -149,7 +149,7 @@ class MainActivity : ComponentActivity() {
                         platform = contest.platform,
                         contestTime = contest.durationSeconds,
                         startTimeSeconds = contest.startTimeSeconds,
-                        relativeTimeSeconds = contest.relativeTimeSeconds
+                        relativeTimeSeconds = System.currentTimeMillis()/1000-contest.startTimeSeconds
                     )
                 )
             }
