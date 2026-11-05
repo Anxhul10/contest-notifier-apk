@@ -1,9 +1,5 @@
 package com.anxhul10.contest_notifier_apk.ui.components
 
-import android.content.Intent
-import android.graphics.fonts.FontStyle
-import android.net.Uri
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -62,7 +58,7 @@ fun CardWrapper(
             Contest -> Card(
                     title = Contest.name,
                     platform = Contest.platform,
-                    contestTime = Contest.contestTime,
+                    contestDuration = Contest.contestDuration,
                     relativeTimeSeconds = Contest.relativeTimeSeconds
                 )
         }

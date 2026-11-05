@@ -33,7 +33,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
-import androidx.room3.ColumnInfo
 import androidx.room3.Dao
 import androidx.room3.Query
 import androidx.room3.Insert
@@ -97,7 +96,7 @@ interface APIService {
     @GET("health")
     suspend fun checkHealth(): Health
 }
-data class ContestData(val name: String, val platform: String, val contestTime: Int, val relativeTimeSeconds: Long, val startTimeSeconds: Long)
+data class ContestData(val name: String, val platform: String, val contestDuration: Int, val relativeTimeSeconds: Long, val startTimeSeconds: Long)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -147,7 +146,7 @@ class MainActivity : ComponentActivity() {
                     ContestData(
                         name = contest.name,
                         platform = contest.platform,
-                        contestTime = contest.durationSeconds,
+                        contestDuration = contest.durationSeconds,
                         startTimeSeconds = contest.startTimeSeconds,
                         relativeTimeSeconds = System.currentTimeMillis()/1000-contest.startTimeSeconds
                     )
@@ -198,7 +197,7 @@ class MainActivity : ComponentActivity() {
                         val tmpData = ContestData(
                             name = contest.name,
                             platform = platform,
-                            contestTime = contest.durationSeconds,
+                            contestDuration = contest.durationSeconds,
                             relativeTimeSeconds = contest.relativeTimeSeconds,
                             startTimeSeconds = System.currentTimeMillis()/1000-contest.relativeTimeSeconds
                         )
@@ -219,7 +218,7 @@ class MainActivity : ComponentActivity() {
                 data ->
                 Contest(
                     name = data.name,
-                    durationSeconds = data.contestTime,
+                    durationSeconds = data.contestDuration,
                     startTimeSeconds = data.startTimeSeconds,
                     platform = data.platform,
                     relativeTimeSeconds = data.relativeTimeSeconds
@@ -273,7 +272,7 @@ class MainActivity : ComponentActivity() {
                     "contestNotifier",
                     "Name: ${contest.name}" +
                             "platform: ${contest.platform}" +
-                            "contest time: ${contest.contestTime}"+
+                            "contest time: ${contest.contestDuration}"+
                             "relative time: ${contest.relativeTimeSeconds}"
                 )
             }

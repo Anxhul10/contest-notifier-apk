@@ -22,7 +22,7 @@ import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 
 @Composable
-fun Card(title: String,platform: String, contestTime: Int,relativeTimeSeconds: Long, modifier: Modifier = Modifier) {
+fun Card(title: String,platform: String, contestDuration: Int,relativeTimeSeconds: Long, modifier: Modifier = Modifier) {
     var expanded = remember { mutableStateOf(false)};
     var remainingSeconds by remember(relativeTimeSeconds) {
         mutableStateOf(-relativeTimeSeconds);
@@ -48,7 +48,7 @@ fun Card(title: String,platform: String, contestTime: Int,relativeTimeSeconds: L
                 .padding(bottom = extraPadding.value)
             ) {
                 Text(text = title, fontWeight = FontWeight.ExtraBold);
-                val hr = contestTime / (60*60);
+                val hr = contestDuration / (60*60);
                 Text(text = hr.toString()+" hr", fontWeight = FontWeight.ExtraLight, fontStyle = FontStyle.Italic)
                 Text(
                     text = if (remainingSeconds > 0) {
