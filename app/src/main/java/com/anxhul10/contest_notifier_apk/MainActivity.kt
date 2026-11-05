@@ -32,7 +32,16 @@ import android.Manifest
 import android.R
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
 import androidx.room3.Dao
@@ -133,7 +142,7 @@ class MainActivity : ComponentActivity() {
                 .setDriver(AndroidSQLiteDriver())
                 .build()
         val contestDao = db.contestDao();
-        val updateAvailable = mutableStateOf(false);
+        val updateAvailable = mutableStateOf(true);
 
         setContent {
             ContestnotifierapkTheme {
@@ -316,8 +325,34 @@ fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyL
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if(updateAvailable.value) {
-                Text("Update Available!")
+            if (updateAvailable.value) {
+                Surface(
+                    color = if (isSystemInDarkTheme()) Color(0xFF203B3B) else Color(0xFFDCEFEA),
+                    modifier = Modifier.padding(vertical = 1.dp, horizontal = 6.dp),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp, vertical = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Update Available!",
+                                color = if (isSystemInDarkTheme()) Color(0xFFB9E5D8) else Color(0xFF245B50),
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "Download the latest version from GitHub Releases.",
+                                color = if (isSystemInDarkTheme()) Color(0xFFA8CFC4) else Color(0xFF426B62),
+                                fontWeight = FontWeight.Normal,
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                        }
+                    }
+                }
             }
             if(names.isEmpty()) {
                 CircularProgressIndicator();
