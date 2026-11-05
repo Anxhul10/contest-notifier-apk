@@ -243,6 +243,7 @@ class MainActivity : ComponentActivity() {
 
             contestStorage.forEach { contest ->
                 val alarmItem = AlarmItem(
+                    id = "${contest.platform}_${contest.name}_${contest.startTimeSeconds}_10m",
                     time = LocalDateTime.now()
                         .plusSeconds(
                             contest.startTimeSeconds -
@@ -253,6 +254,7 @@ class MainActivity : ComponentActivity() {
                 Log.d("alarm debug", "trigger time ${alarmItem.time}")
                 Log.d("alarm debug", "current time ${LocalDateTime.now()}")
                 val alarmItem2 = AlarmItem(
+                    id = "${contest.platform}_${contest.name}_${contest.startTimeSeconds}_1hr",
                     time = LocalDateTime.now()
                         .plusSeconds(
                             contest.startTimeSeconds -
