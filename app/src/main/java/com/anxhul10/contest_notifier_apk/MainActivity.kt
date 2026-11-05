@@ -29,8 +29,23 @@ import androidx.core.content.edit
 import com.anxhul10.contest_notifier_apk.utils.AlarmItem
 import com.anxhul10.contest_notifier_apk.utils.AndroidAlarmScheduler
 import android.Manifest
+import android.R
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
 import androidx.room3.Dao
@@ -41,6 +56,7 @@ import androidx.room3.Database
 import androidx.room3.RoomDatabase
 import androidx.room3.Room
 import androidx.sqlite.driver.AndroidSQLiteDriver
+import com.anxhul10.contest_notifier_apk.utils.GithubApiService
 
 @Dao
 interface ContestDao {
@@ -130,16 +146,35 @@ class MainActivity : ComponentActivity() {
             Room.databaseBuilder<AppDatabase>(applicationContext, "database-name")
                 .setDriver(AndroidSQLiteDriver())
                 .build()
-        val contestDao = db.contestDao()
+        val contestDao = db.contestDao();
+        val updateAvailable = mutableStateOf(false);
+
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+        val githubRetrofit = Retrofit.Builder()
+            .baseUrl("https://api.github.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val githubApi = githubRetrofit.create(GithubApiService::class.java)
 
         setContent {
             ContestnotifierapkTheme {
-                TopBar(contestLocalStorage, contestStorage.size == 0)
+                TopBar(contestLocalStorage, contestStorage.size == 0, updateAvailable)
             }
         }
 
 
         lifecycleScope.launch {
+            try {
+                val release = githubApi.getLatestRelease()
+                val latestVersion = release.tag_name.removePrefix("v")
+
+                updateAvailable.value = (!(latestVersion == packageInfo.versionName))
+
+            } catch (e: Exception) {
+                Log.e("UpdateCheck", "Failed to check update", e)
+            }
+
             val getContestFromStorage = contestDao.getAllContests();
             for(contest in getContestFromStorage) {
                 tmpContestLocalStorage.add(
@@ -304,7 +339,8 @@ fun loadContests(context: Context): List<ContestData> {
     return Gson().fromJson(json, type);
 }
 @Composable
-fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyList(), isLoading: Boolean) {
+fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyList(), isLoading: Boolean, updateAvailable: MutableState<Boolean>) {
+    val context = LocalContext.current
     Surface (
         modifier = modifier,
         color = MaterialTheme.colorScheme.background
@@ -313,6 +349,43 @@ fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyL
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            if (updateAvailable.value) {
+                Surface(
+                    color = if (isSystemInDarkTheme()) Color(0xFF203B3B) else Color(0xFFDCEFEA),
+                    modifier = Modifier
+                        .padding(vertical = 1.dp, horizontal = 6.dp)
+                        .clickable{
+                            val intent = Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://github.com/Anxhul10/contest-notifier-apk/releases/latest")
+                            )
+                            context.startActivity(intent)
+                        },
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp, vertical = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Update Available!",
+                                color = if (isSystemInDarkTheme()) Color(0xFFB9E5D8) else Color(0xFF245B50),
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "Download the latest version from GitHub Releases.",
+                                color = if (isSystemInDarkTheme()) Color(0xFFA8CFC4) else Color(0xFF426B62),
+                                fontWeight = FontWeight.Normal,
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                        }
+                    }
+                }
+            }
             if(names.isEmpty()) {
                 CircularProgressIndicator();
             } else {
