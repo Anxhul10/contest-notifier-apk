@@ -1,16 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
 }
 
 android {
-    namespace = "com.example.contest_notifier_apk"
+    namespace = "com.anxhul10.contest_notifier_apk"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.contest_notifier_apk"
+        applicationId = "com.anxhul10.contest_notifier_apk"
         minSdk = 33
         targetSdk = 37
         versionCode = 1
@@ -36,6 +37,12 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.sqlite.framework)
+    val room_version = "3.0.3"
+
+    implementation("androidx.room3:room3-runtime:$room_version")
+    ksp("androidx.room3:room3-compiler:$room_version")
+
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("androidx.compose.ui:ui-text-google-fonts:1.12.1")

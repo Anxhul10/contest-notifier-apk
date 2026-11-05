@@ -1,4 +1,4 @@
-package com.example.contest_notifier_apk.utils
+package com.anxhul10.contest_notifier_apk.utils
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import java.time.ZoneId
-import android.os.Build
+
 class AndroidAlarmScheduler(
     private val context: Context
 ): AlarmScheduler {

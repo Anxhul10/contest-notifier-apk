@@ -1,4 +1,4 @@
-package com.example.contest_notifier_apk
+package com.anxhul10.contest_notifier_apk
 import androidx.compose.runtime.mutableStateListOf
 import android.os.Bundle
 import android.util.Log
@@ -13,26 +13,66 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
-import com.example.contest_notifier_apk.ui.components.CardWrapper
-import com.example.contest_notifier_apk.ui.theme.ContestnotifierapkTheme
-import com.example.contest_notifier_apk.ui.components.TopBar
+import com.anxhul10.contest_notifier_apk.ui.components.CardWrapper
+import com.anxhul10.contest_notifier_apk.ui.theme.ContestnotifierapkTheme
+import com.anxhul10.contest_notifier_apk.ui.components.TopBar
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import java.time.LocalDateTime
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import retrofit2.http.GET
 import retrofit2.http.Path
 import android.content.Context
 import com.google.gson.reflect.TypeToken
 import androidx.core.content.edit
-import com.example.contest_notifier_apk.utils.AlarmItem
-import com.example.contest_notifier_apk.utils.AndroidAlarmScheduler
+import com.anxhul10.contest_notifier_apk.utils.AlarmItem
+import com.anxhul10.contest_notifier_apk.utils.AndroidAlarmScheduler
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
+import androidx.room3.Dao
+import androidx.room3.Query
+import androidx.room3.Insert
+import androidx.room3.Delete
+import androidx.room3.Database
+import androidx.room3.RoomDatabase
+import androidx.room3.Room
+import androidx.sqlite.driver.AndroidSQLiteDriver
 
+@Dao
+interface ContestDao {
+    @Query("SELECT * FROM contests")
+    suspend fun getAllContests(): List<Contest>
+
+    @Query("SELECT * FROM contests WHERE id IN (:contestIds)")
+    suspend fun loadAllContestByIds(contestIds: IntArray): List<Contest>
+
+    @Query("DELETE FROM contests")
+    suspend fun deleteAllContests()
+
+    @Insert
+    suspend fun insertAll(contests: List<Contest>)
+
+    @Delete
+    suspend fun delete(contest: Contest)
+}
+@Entity(tableName = "contests")
+data class Contest(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val name: String,
+    val durationSeconds: Int,
+    val startTimeSeconds: Long,
+    val platform: String,
+    val relativeTimeSeconds: Long
+)
+@Database(entities = [Contest::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun contestDao(): ContestDao
+}
 data class ContestRes(
     val name: String,
     val durationSeconds: Int,
@@ -56,7 +96,7 @@ interface APIService {
     @GET("health")
     suspend fun checkHealth(): Health
 }
-data class ContestData(val name: String, val platform: String, val contestTime: Int, val relativeTimeSeconds: Long, val startTimeSeconds: Long)
+data class ContestData(val name: String, val platform: String, val contestDuration: Int, val relativeTimeSeconds: Long, val startTimeSeconds: Long)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,14 +123,38 @@ class MainActivity : ComponentActivity() {
             .build()
             .create(APIService::class.java)
         val contestStorage = mutableStateListOf<ContestData>();
+        val contestLocalStorage = mutableStateListOf<ContestData>();
         val tmpContestStorage = mutableListOf<ContestData>();
+        val tmpContestLocalStorage = mutableListOf<ContestData>();
+        val db =
+            Room.databaseBuilder<AppDatabase>(applicationContext, "database-name")
+                .setDriver(AndroidSQLiteDriver())
+                .build()
+        val contestDao = db.contestDao()
+
         setContent {
             ContestnotifierapkTheme {
-                TopBar(contestStorage)
+                TopBar(contestLocalStorage, contestStorage.size == 0)
             }
         }
 
+
         lifecycleScope.launch {
+            val getContestFromStorage = contestDao.getAllContests();
+            for(contest in getContestFromStorage) {
+                tmpContestLocalStorage.add(
+                    ContestData(
+                        name = contest.name,
+                        platform = contest.platform,
+                        contestDuration = contest.durationSeconds,
+                        startTimeSeconds = contest.startTimeSeconds,
+                        relativeTimeSeconds = System.currentTimeMillis()/1000-contest.startTimeSeconds
+                    )
+                )
+            }
+            contestLocalStorage.clear();
+            contestLocalStorage.addAll(tmpContestLocalStorage);
+            saveContests(this@MainActivity, contestLocalStorage);
 
             var isReady = false;
 
@@ -133,7 +197,7 @@ class MainActivity : ComponentActivity() {
                         val tmpData = ContestData(
                             name = contest.name,
                             platform = platform,
-                            contestTime = contest.durationSeconds,
+                            contestDuration = contest.durationSeconds,
                             relativeTimeSeconds = contest.relativeTimeSeconds,
                             startTimeSeconds = System.currentTimeMillis()/1000-contest.relativeTimeSeconds
                         )
@@ -150,10 +214,25 @@ class MainActivity : ComponentActivity() {
                 .sortedByDescending {
                     it.relativeTimeSeconds
                 }
-
+            val contestToSave = sortedOrder.map {
+                data ->
+                Contest(
+                    name = data.name,
+                    durationSeconds = data.contestDuration,
+                    startTimeSeconds = data.startTimeSeconds,
+                    platform = data.platform,
+                    relativeTimeSeconds = data.relativeTimeSeconds
+                )
+            }
+            contestDao.deleteAllContests();
+            contestDao.insertAll(contestToSave);
             contestStorage.clear();
             contestStorage.addAll(sortedOrder);
             saveContests(this@MainActivity, contestStorage);
+            if(contestStorage.size!=0) {
+                contestLocalStorage.clear();
+                contestLocalStorage.addAll(contestStorage);
+            }
 //            usage
 //            alarmItem = AlarmItem(
 //                time = LocalDateTime.now().plusSeconds(5),
@@ -193,7 +272,7 @@ class MainActivity : ComponentActivity() {
                     "contestNotifier",
                     "Name: ${contest.name}" +
                             "platform: ${contest.platform}" +
-                            "contest time: ${contest.contestTime}"+
+                            "contest time: ${contest.contestDuration}"+
                             "relative time: ${contest.relativeTimeSeconds}"
                 )
             }
@@ -223,7 +302,7 @@ fun loadContests(context: Context): List<ContestData> {
     return Gson().fromJson(json, type);
 }
 @Composable
-fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyList()) {
+fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyList(), isLoading: Boolean) {
     Surface (
         modifier = modifier,
         color = MaterialTheme.colorScheme.background
@@ -231,12 +310,11 @@ fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyL
         Column (
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center
         ) {
             if(names.isEmpty()) {
                 CircularProgressIndicator();
             } else {
-                CardWrapper(modifier, names)
+                CardWrapper(modifier, names, isLoading)
             }
         }
     }

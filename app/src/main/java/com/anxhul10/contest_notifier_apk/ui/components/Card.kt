@@ -1,4 +1,4 @@
-package com.example.contest_notifier_apk.ui.components
+package com.anxhul10.contest_notifier_apk.ui.components
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Column
@@ -16,15 +16,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
-import com.example.contest_notifier_apk.utils.fontFamily
 
 @Composable
-fun Card(title: String,platform: String, contestTime: Int,relativeTimeSeconds: Long, modifier: Modifier = Modifier) {
+fun Card(title: String,platform: String, contestDuration: Int,relativeTimeSeconds: Long, startTimeSeconds: Long, modifier: Modifier = Modifier) {
     var expanded = remember { mutableStateOf(false)};
     var remainingSeconds by remember(relativeTimeSeconds) {
         mutableStateOf(-relativeTimeSeconds);
@@ -50,7 +48,7 @@ fun Card(title: String,platform: String, contestTime: Int,relativeTimeSeconds: L
                 .padding(bottom = extraPadding.value)
             ) {
                 Text(text = title, fontWeight = FontWeight.ExtraBold);
-                val hr = contestTime / (60*60);
+                val hr = contestDuration / (60*60);
                 Text(text = hr.toString()+" hr", fontWeight = FontWeight.ExtraLight, fontStyle = FontStyle.Italic)
                 Text(
                     text = if (remainingSeconds > 0) {
@@ -60,7 +58,10 @@ fun Card(title: String,platform: String, contestTime: Int,relativeTimeSeconds: L
                         val seconds = remainingSeconds % 60
 
                         "${days}d ${hours}h ${minutes}m ${seconds}s"
-                    } else {
+                    } else if(System.currentTimeMillis()/1000 >= startTimeSeconds+contestDuration) {
+                        "Contest ended!"
+                    }
+                    else {
                         "Started"
                     }
                 )

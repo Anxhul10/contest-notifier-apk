@@ -1,4 +1,4 @@
-package com.example.contest_notifier_apk.ui.components
+package com.anxhul10.contest_notifier_apk.ui.components
 
 import android.content.Intent
 import android.net.Uri
@@ -19,14 +19,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.contest_notifier_apk.ContestData
-import com.example.contest_notifier_apk.ContestList
-import com.example.contest_notifier_apk.R
-import com.example.contest_notifier_apk.utils.fontFamily
+import com.anxhul10.contest_notifier_apk.ContestData
+import com.anxhul10.contest_notifier_apk.ContestList
+import com.anxhul10.contest_notifier_apk.R
+import com.anxhul10.contest_notifier_apk.utils.fontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(contestStorage: List<ContestData>) {
+fun TopBar(contestStorage: List<ContestData>, isLoading: Boolean) {
     val context = LocalContext.current
     Scaffold(
         topBar = {
@@ -77,6 +77,6 @@ fun TopBar(contestStorage: List<ContestData>) {
 
         ) {
             innerPadding ->
-        ContestList(Modifier.padding((innerPadding)), contestStorage)
+        ContestList(Modifier.padding((innerPadding)), contestStorage, isLoading)
     }
 }

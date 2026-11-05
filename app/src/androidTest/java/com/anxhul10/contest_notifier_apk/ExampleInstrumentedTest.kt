@@ -1,4 +1,4 @@
-package com.example.contest_notifier_apk
+package com.anxhul10.contest_notifier_apk
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

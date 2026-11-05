@@ -1,4 +1,4 @@
-package com.example.contest_notifier_apk.ui.theme
+package com.anxhul10.contest_notifier_apk.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
