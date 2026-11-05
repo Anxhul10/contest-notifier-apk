@@ -59,7 +59,8 @@ fun CardWrapper(
                     title = Contest.name,
                     platform = Contest.platform,
                     contestDuration = Contest.contestDuration,
-                    relativeTimeSeconds = Contest.relativeTimeSeconds
+                    relativeTimeSeconds = Contest.relativeTimeSeconds,
+                    startTimeSeconds = Contest.startTimeSeconds
                 )
         }
     }
