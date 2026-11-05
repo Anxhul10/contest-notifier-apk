@@ -45,7 +45,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
 import androidx.room3.Dao
@@ -57,6 +59,8 @@ import androidx.room3.RoomDatabase
 import androidx.room3.Room
 import androidx.sqlite.driver.AndroidSQLiteDriver
 import com.anxhul10.contest_notifier_apk.utils.GithubApiService
+import com.anxhul10.contest_notifier_apk.utils.bodyFontFamily
+import com.anxhul10.contest_notifier_apk.utils.headingFontFamily
 
 @Dao
 interface ContestDao {
@@ -388,6 +392,26 @@ fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyL
             }
             if(names.isEmpty()) {
                 CircularProgressIndicator();
+                Text(
+                    text = "Getting things ready...",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = headingFontFamily
+                )
+
+                Text(
+                    text = "We're fetching the latest contests. The server may take "
+                            + "a little longer to respond after being inactive.",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 13.sp,
+                    lineHeight = 18.sp,
+                    fontFamily = bodyFontFamily
+                )
             } else {
                 CardWrapper(modifier, names, isLoading)
             }
