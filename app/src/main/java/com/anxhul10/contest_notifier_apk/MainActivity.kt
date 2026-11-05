@@ -64,8 +64,8 @@ data class Contest(
     val name: String,
     val durationSeconds: Int,
     val startTimeSeconds: Long,
-    val platform: String
-//    val relativeTimeSeconds: Long
+    val platform: String,
+    val relativeTimeSeconds: Long
 )
 @Database(entities = [Contest::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
@@ -121,19 +121,39 @@ class MainActivity : ComponentActivity() {
             .build()
             .create(APIService::class.java)
         val contestStorage = mutableStateListOf<ContestData>();
+        val contestLocalStorage = mutableStateListOf<ContestData>();
         val tmpContestStorage = mutableListOf<ContestData>();
-        setContent {
-            ContestnotifierapkTheme {
-                TopBar(contestStorage)
-            }
-        }
+        val tmpContestLocalStorage = mutableListOf<ContestData>();
         val db =
             Room.databaseBuilder<AppDatabase>(applicationContext, "database-name")
                 .setDriver(AndroidSQLiteDriver())
                 .build()
         val contestDao = db.contestDao()
 
+        setContent {
+            ContestnotifierapkTheme {
+                TopBar(contestLocalStorage, contestStorage.size == 0)
+            }
+        }
+
+
         lifecycleScope.launch {
+            val getContestFromStorage = contestDao.getAllContests();
+            for(contest in getContestFromStorage) {
+                tmpContestLocalStorage.add(
+                    ContestData(
+                        name = contest.name,
+                        platform = contest.platform,
+                        contestTime = contest.durationSeconds,
+                        startTimeSeconds = contest.startTimeSeconds,
+                        relativeTimeSeconds = contest.relativeTimeSeconds
+                    )
+                )
+            }
+            contestLocalStorage.clear();
+            contestLocalStorage.addAll(tmpContestLocalStorage);
+            saveContests(this@MainActivity, contestLocalStorage);
+
             var isReady = false;
 
             repeat(10) {
@@ -198,16 +218,20 @@ class MainActivity : ComponentActivity() {
                     name = data.name,
                     durationSeconds = data.contestTime,
                     startTimeSeconds = data.startTimeSeconds,
-                    platform = data.platform
+                    platform = data.platform,
+                    relativeTimeSeconds = data.relativeTimeSeconds
                 )
             }
+
             contestDao.insertAll(contestToSave);
-            val tmp = contestDao.getAllContests();
-            Log.d("storage", "my storage: $tmp")
+
             contestStorage.clear();
             contestStorage.addAll(sortedOrder);
             saveContests(this@MainActivity, contestStorage);
-
+            if(contestStorage.size!=0) {
+                contestLocalStorage.clear();
+                contestLocalStorage.addAll(contestStorage);
+            }
 //            usage
 //            alarmItem = AlarmItem(
 //                time = LocalDateTime.now().plusSeconds(5),
@@ -277,7 +301,7 @@ fun loadContests(context: Context): List<ContestData> {
     return Gson().fromJson(json, type);
 }
 @Composable
-fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyList()) {
+fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyList(), isLoading: Boolean) {
     Surface (
         modifier = modifier,
         color = MaterialTheme.colorScheme.background
@@ -285,12 +309,11 @@ fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyL
         Column (
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center
         ) {
             if(names.isEmpty()) {
                 CircularProgressIndicator();
             } else {
-                CardWrapper(modifier, names)
+                CardWrapper(modifier, names, isLoading)
             }
         }
     }
