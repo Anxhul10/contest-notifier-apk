@@ -58,9 +58,13 @@ import androidx.room3.Database
 import androidx.room3.RoomDatabase
 import androidx.room3.Room
 import androidx.sqlite.driver.AndroidSQLiteDriver
+import com.anxhul10.contest_notifier_apk.data.external.RetrofitInstances
 import com.anxhul10.contest_notifier_apk.utils.GithubApiService
 import com.anxhul10.contest_notifier_apk.utils.bodyFontFamily
 import com.anxhul10.contest_notifier_apk.utils.headingFontFamily
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import retrofit2.create
 
 @Dao
 interface ContestDao {
@@ -116,6 +120,7 @@ interface APIService {
     @GET("health")
     suspend fun checkHealth(): Health
 }
+
 data class ContestData(val name: String, val platform: String, val contestDuration: Int, val relativeTimeSeconds: Long, val startTimeSeconds: Long)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -169,6 +174,16 @@ class MainActivity : ComponentActivity() {
 
 
         lifecycleScope.launch {
+            try {
+                val retrofit = RetrofitInstances()
+                val allContests = retrofit.runner()
+
+                allContests.forEach {
+                    Log.d("xyz", it.name)
+                }
+            } catch (e: Exception) {
+                Log.e("Retrofit instance", "Failed to create retrofit instance", e)
+            }
             try {
                 val release = githubApi.getLatestRelease()
                 val latestVersion = release.tag_name.removePrefix("v")
