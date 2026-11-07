@@ -14,13 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.anxhul10.contest_notifier_apk.model.GlobalContest
 import com.anxhul10.contest_notifier_apk.utils.bodyFontFamily
 import com.anxhul10.contest_notifier_apk.utils.headingFontFamily
 
 @Composable
 fun CardWrapper(
     modifier: Modifier = Modifier,
-    Contests: List<ContestData>,
+    Contests: List<GlobalContest>,
     isLoading: Boolean
 ) {
     LazyColumn() {

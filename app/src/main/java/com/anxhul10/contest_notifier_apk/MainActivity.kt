@@ -59,32 +59,35 @@ import androidx.room3.RoomDatabase
 import androidx.room3.Room
 import androidx.sqlite.driver.AndroidSQLiteDriver
 import com.anxhul10.contest_notifier_apk.data.external.RetrofitInstances
+import com.anxhul10.contest_notifier_apk.model.GlobalContest
 import com.anxhul10.contest_notifier_apk.utils.GithubApiService
 import com.anxhul10.contest_notifier_apk.utils.bodyFontFamily
 import com.anxhul10.contest_notifier_apk.utils.headingFontFamily
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import retrofit2.create
 
 @Dao
 interface ContestDao {
     @Query("SELECT * FROM contests")
-    suspend fun getAllContests(): List<Contest>
+    suspend fun getAllContests(): List<ContestEntity>
 
     @Query("SELECT * FROM contests WHERE id IN (:contestIds)")
-    suspend fun loadAllContestByIds(contestIds: IntArray): List<Contest>
+    suspend fun loadAllContestByIds(contestIds: IntArray): List<ContestEntity>
 
     @Query("DELETE FROM contests")
     suspend fun deleteAllContests()
 
     @Insert
-    suspend fun insertAll(contests: List<Contest>)
+    suspend fun insertAll(contests: List<ContestEntity>)
 
     @Delete
-    suspend fun delete(contest: Contest)
+    suspend fun delete(contest: ContestEntity)
 }
+// TODO: change durationSeconds to contestDuration for consistency
 @Entity(tableName = "contests")
-data class Contest(
+data class ContestEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String,
@@ -93,32 +96,9 @@ data class Contest(
     val platform: String,
     val relativeTimeSeconds: Long
 )
-@Database(entities = [Contest::class], version = 1)
+@Database(entities = [ContestEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun contestDao(): ContestDao
-}
-data class ContestRes(
-    val name: String,
-    val durationSeconds: Int,
-    val startTimeSeconds: Long,
-    val relativeTimeSeconds: Long
-
-)
-data class Contests(
-    val status: String,
-    val result: List<ContestRes>
-)
-data class Health(
-    val status: String
-)
-interface APIService {
-    @GET("api/{platform}")
-    suspend fun getData(
-        @Path("platform") platform: String
-    ): Contests
-
-    @GET("health")
-    suspend fun checkHealth(): Health
 }
 
 data class ContestData(val name: String, val platform: String, val contestDuration: Int, val relativeTimeSeconds: Long, val startTimeSeconds: Long)
@@ -141,21 +121,14 @@ class MainActivity : ComponentActivity() {
 
         alarmItem?.let(schedular::schedule)
 
-        val api: APIService = Retrofit.Builder()
-//            .baseUrl("http://127.0.0.1:3000/")
-            .baseUrl("https://contest-notifier-apk.onrender.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(APIService::class.java)
-        val contestStorage = mutableStateListOf<ContestData>();
-        val contestLocalStorage = mutableStateListOf<ContestData>();
-        val tmpContestStorage = mutableListOf<ContestData>();
-        val tmpContestLocalStorage = mutableListOf<ContestData>();
+        val contestRoomState = mutableStateListOf<GlobalContest>()
+        val contestFetchState = mutableStateListOf<GlobalContest>();
+
         val db =
             Room.databaseBuilder<AppDatabase>(applicationContext, "database-name")
                 .setDriver(AndroidSQLiteDriver())
                 .build()
-        val contestDao = db.contestDao();
+        val roomtInstance = db.contestDao();
         val updateAvailable = mutableStateOf(false);
 
         val packageInfo = packageManager.getPackageInfo(packageName, 0)
@@ -168,22 +141,77 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ContestnotifierapkTheme {
-                TopBar(contestLocalStorage, contestStorage.size == 0, updateAvailable)
+                TopBar(contestRoomState, contestFetchState.size == 0, updateAvailable)
             }
         }
 
 
         lifecycleScope.launch {
             try {
-                val retrofit = RetrofitInstances()
-                val allContests = retrofit.runner()
+                val fetchJob = async {
+                    RetrofitInstances().runner()
+                }
 
-                allContests.forEach {
-                    Log.d("xyz", it.name)
+                val storedContests: List<ContestEntity> = roomtInstance.getAllContests()
+
+                if(storedContests.isEmpty()) {
+                    val fetchContests = fetchJob.await()
+                    contestFetchState.clear()
+                    contestFetchState.addAll(fetchContests)
+                    if(!fetchContests.isEmpty()) {
+                        roomtInstance.deleteAllContests()
+                        contestRoomState.addAll(fetchContests)
+                        roomtInstance.insertAll(
+                            fetchContests.map { contest ->
+                                ContestEntity(
+                                    name = contest.name,
+                                    platform = contest.platform,
+                                    durationSeconds = contest.contestDuration,
+                                    relativeTimeSeconds = contest.relativeTimeSeconds,
+                                    startTimeSeconds = contest.startTimeSeconds
+                                )
+                            }
+                        )
+                    }
+                } else {
+                    contestRoomState.clear()
+                    contestRoomState.addAll(
+                        storedContests.map{ contest->
+                            GlobalContest(
+                                name = contest.name,
+                                platform = contest.platform,
+                                contestDuration = contest.durationSeconds,
+                                relativeTimeSeconds = contest.relativeTimeSeconds,
+                                startTimeSeconds = contest.startTimeSeconds
+                            )
+
+                        }
+                    )
+                    val fetchContests = fetchJob.await()
+                    contestFetchState.clear()
+                    contestFetchState.addAll(fetchContests)
+                    if(!contestFetchState.isEmpty()) {
+                        roomtInstance.deleteAllContests()
+                        contestRoomState.addAll(fetchContests)
+                        roomtInstance.insertAll(
+                            contestFetchState.map{
+                                contest->
+                                ContestEntity(
+                                    name = contest.name,
+                                    platform = contest.platform,
+                                    durationSeconds = contest.contestDuration,
+                                    relativeTimeSeconds = contest.relativeTimeSeconds,
+                                    startTimeSeconds = contest.startTimeSeconds
+                                )
+                            }
+                        )
+                    }
                 }
             } catch (e: Exception) {
                 Log.e("Retrofit instance", "Failed to create retrofit instance", e)
             }
+
+            // update banner
             try {
                 val release = githubApi.getLatestRelease()
                 val latestVersion = release.tag_name.removePrefix("v")
@@ -194,108 +222,11 @@ class MainActivity : ComponentActivity() {
                 Log.e("UpdateCheck", "Failed to check update", e)
             }
 
-            val getContestFromStorage = contestDao.getAllContests();
-            for(contest in getContestFromStorage) {
-                tmpContestLocalStorage.add(
-                    ContestData(
-                        name = contest.name,
-                        platform = contest.platform,
-                        contestDuration = contest.durationSeconds,
-                        startTimeSeconds = contest.startTimeSeconds,
-                        relativeTimeSeconds = System.currentTimeMillis()/1000-contest.startTimeSeconds
-                    )
-                )
-            }
-            contestLocalStorage.clear();
-            contestLocalStorage.addAll(tmpContestLocalStorage);
-            saveContests(this@MainActivity, contestLocalStorage);
 
-            var isReady = false;
-
-            repeat(10) {
-                attempt ->
-                try {
-                    val health = api.checkHealth();
-                    if(health.status.equals("ok", ignoreCase = true)) {
-                        isReady = true;
-                        Log.d("API", "Health: ${health.status}");
-                        return@repeat;
-                    } else {
-                        Log.d("API", "Health check returned: ${health.status}");
-                    }
-                } catch(e: Exception) {
-                    Log.e("API", "Health attempt ${attempt+1} : ${e.message}");
-                }
-                if(!isReady && attempt < 9) {
-                    kotlinx.coroutines.delay(3000);
-                }
-            }
-            if (!isReady) {
-                Log.e("API", "Server unavailable after 10 attempts")
-                return@launch
-            }
-
-            val platforms = listOf(
-                "leetcode",
-                "codeforces",
-                "codechef"
-            )
-
-            for(platform in platforms) {
-                try {
-                    val res = api.getData(platform);
-
-                    res.result.forEach {
-                            contest ->
-
-                        val tmpData = ContestData(
-                            name = contest.name,
-                            platform = platform,
-                            contestDuration = contest.durationSeconds,
-                            relativeTimeSeconds = contest.relativeTimeSeconds,
-                            startTimeSeconds = System.currentTimeMillis()/1000-contest.relativeTimeSeconds
-                        )
-                        tmpContestStorage.add(tmpData);
-                    }
-                } catch (e: Exception) {
-                    Log.e("API", "Error: ${e.message}");
-                }
-            }
-            val sortedOrder = tmpContestStorage
-                .filter {
-                    it.relativeTimeSeconds <= 0
-                }
-                .sortedByDescending {
-                    it.relativeTimeSeconds
-                }
-            val contestToSave = sortedOrder.map {
-                data ->
-                Contest(
-                    name = data.name,
-                    durationSeconds = data.contestDuration,
-                    startTimeSeconds = data.startTimeSeconds,
-                    platform = data.platform,
-                    relativeTimeSeconds = data.relativeTimeSeconds
-                )
-            }
-            contestDao.deleteAllContests();
-            contestDao.insertAll(contestToSave);
-            contestStorage.clear();
-            contestStorage.addAll(sortedOrder);
-            saveContests(this@MainActivity, contestStorage);
-            if(contestStorage.size!=0) {
-                contestLocalStorage.clear();
-                contestLocalStorage.addAll(contestStorage);
-            }
-//            usage
-//            alarmItem = AlarmItem(
-//                time = LocalDateTime.now().plusSeconds(5),
-//                message = "hii there"
-//            )
-
+            // notifications scheduler
             val scheduler = AndroidAlarmScheduler(this@MainActivity)
 
-            contestStorage.forEach { contest ->
+            contestFetchState.forEach { contest ->
                 val alarmItem = AlarmItem(
                     id = "${contest.platform}_${contest.name}_${contest.startTimeSeconds}_10m",
                     time = LocalDateTime.now()
@@ -323,7 +254,7 @@ class MainActivity : ComponentActivity() {
                     scheduler.schedule(alarmItem2);
                 }
             }
-            contestStorage.forEach { contest ->
+            contestFetchState.forEach { contest ->
                 Log.d(
                     "contestNotifier",
                     "Name: ${contest.name}" +
@@ -336,14 +267,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun saveContests(context: Context, contests: List<ContestData>) {
-    val json = Gson().toJson(contests);
-
-    context.getSharedPreferences("contest_cache", Context.MODE_PRIVATE)
-        .edit {
-            putString("contests", json)
-        }
-}
+//fun saveContests(context: Context, contests: List<ContestData>) {
+//    val json = Gson().toJson(contests);
+//
+//    context.getSharedPreferences("contest_cache", Context.MODE_PRIVATE)
+//        .edit {
+//            putString("contests", json)
+//        }
+//}
 
 fun loadContests(context: Context): List<ContestData> {
     val prefs = context.getSharedPreferences(
@@ -358,7 +289,7 @@ fun loadContests(context: Context): List<ContestData> {
     return Gson().fromJson(json, type);
 }
 @Composable
-fun ContestList(modifier: Modifier = Modifier, names: List<ContestData> = emptyList(), isLoading: Boolean, updateAvailable: MutableState<Boolean>) {
+fun ContestList(modifier: Modifier = Modifier, names: List<GlobalContest> = emptyList(), isLoading: Boolean, updateAvailable: MutableState<Boolean>) {
     val context = LocalContext.current
     Surface (
         modifier = modifier,

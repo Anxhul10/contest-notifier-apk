@@ -23,11 +23,12 @@ import androidx.compose.ui.unit.sp
 import com.anxhul10.contest_notifier_apk.ContestData
 import com.anxhul10.contest_notifier_apk.ContestList
 import com.anxhul10.contest_notifier_apk.R
+import com.anxhul10.contest_notifier_apk.model.GlobalContest
 import com.anxhul10.contest_notifier_apk.utils.fontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(contestStorage: List<ContestData>, isLoading: Boolean, updateAvailable: MutableState<Boolean>) {
+fun TopBar(contestStorage: List<GlobalContest>, isLoading: Boolean, updateAvailable: MutableState<Boolean>) {
     val context = LocalContext.current
     Scaffold(
         topBar = {
