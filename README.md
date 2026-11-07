@@ -9,8 +9,8 @@ Have you ever registered for a coding contest, only to forget about it when the 
 ## Download
 
 <p align="center">
-  <a href="https://github.com/Anxhul10/contest-notifier-apk/releases/download/1.4.1/contest-notifier.1.4.1.apk">
-    <img src="https://img.shields.io/badge/Download%20Now-APK%20v1.4.1-brightgreen?style=for-the-badge&logo=android" alt="Download Contest Notifier" />
+  <a href="https://github.com/Anxhul10/contest-notifier-apk/releases/download/1.4.2/contest-notifier.1.4.2.apk">
+    <img src="https://img.shields.io/badge/Download%20Now-APK%20v1.4.2-brightgreen?style=for-the-badge&logo=android" alt="Download Contest Notifier" />
   </a>
 </p>
 
