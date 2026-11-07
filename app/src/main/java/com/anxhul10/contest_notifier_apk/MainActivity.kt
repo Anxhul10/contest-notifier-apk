@@ -158,7 +158,7 @@ class MainActivity : ComponentActivity() {
                     val fetchContests = fetchJob.await()
                     contestFetchState.clear()
                     contestFetchState.addAll(fetchContests)
-                    roomtInstance.deleteAllContests()
+                    contestRoomState.clear()
                     contestRoomState.addAll(contestFetchState)
                     roomtInstance.insertAll(
                         contestFetchState.map { contest ->
