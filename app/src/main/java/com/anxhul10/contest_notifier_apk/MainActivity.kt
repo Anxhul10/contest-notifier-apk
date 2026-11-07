@@ -158,21 +158,19 @@ class MainActivity : ComponentActivity() {
                     val fetchContests = fetchJob.await()
                     contestFetchState.clear()
                     contestFetchState.addAll(fetchContests)
-                    if(!fetchContests.isEmpty()) {
-                        roomtInstance.deleteAllContests()
-                        contestRoomState.addAll(fetchContests)
-                        roomtInstance.insertAll(
-                            fetchContests.map { contest ->
-                                ContestEntity(
-                                    name = contest.name,
-                                    platform = contest.platform,
-                                    durationSeconds = contest.contestDuration,
-                                    relativeTimeSeconds = contest.relativeTimeSeconds,
-                                    startTimeSeconds = contest.startTimeSeconds
-                                )
-                            }
-                        )
-                    }
+                    roomtInstance.deleteAllContests()
+                    contestRoomState.addAll(contestFetchState)
+                    roomtInstance.insertAll(
+                        contestFetchState.map { contest ->
+                            ContestEntity(
+                                name = contest.name,
+                                platform = contest.platform,
+                                durationSeconds = contest.contestDuration,
+                                relativeTimeSeconds = contest.relativeTimeSeconds,
+                                startTimeSeconds = contest.startTimeSeconds
+                            )
+                        }
+                    )
                 } else {
                     contestRoomState.clear()
                     contestRoomState.addAll(
@@ -192,6 +190,7 @@ class MainActivity : ComponentActivity() {
                     contestFetchState.addAll(fetchContests)
                     if(!contestFetchState.isEmpty()) {
                         roomtInstance.deleteAllContests()
+                        contestRoomState.clear()
                         contestRoomState.addAll(fetchContests)
                         roomtInstance.insertAll(
                             contestFetchState.map{
