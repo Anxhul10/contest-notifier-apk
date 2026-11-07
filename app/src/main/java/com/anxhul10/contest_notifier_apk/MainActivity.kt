@@ -348,8 +348,9 @@ fun ContestList(modifier: Modifier = Modifier, names: List<GlobalContest> = empt
                 )
 
                 Text(
-                    text = "We're fetching the latest contests. The server may take "
-                            + "a little longer to respond after being inactive.",
+                    text = "Fetching contests directly from coding platforms."
+                            + "Taking longer than 30 seconds? Please report it on our GitHub repository.",
+
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
