@@ -14,13 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.anxhul10.contest_notifier_apk.model.GlobalContest
 import com.anxhul10.contest_notifier_apk.utils.bodyFontFamily
 import com.anxhul10.contest_notifier_apk.utils.headingFontFamily
 
 @Composable
 fun CardWrapper(
     modifier: Modifier = Modifier,
-    Contests: List<ContestData>,
+    Contests: List<GlobalContest>,
     isLoading: Boolean
 ) {
     LazyColumn() {
@@ -33,7 +34,7 @@ fun CardWrapper(
                     CircularProgressIndicator()
                 }
                 Text(
-                    text = "Waking up the contest server...",
+                    text = "Fetching the latest contests...",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary,
@@ -43,7 +44,7 @@ fun CardWrapper(
                 )
 
                 Text(
-                    text = "The server may take a little longer to respond after being inactive. Your saved contests are available while we fetch the latest updates.",
+                    text = "We're fetching contests directly from coding platforms. " + "If loading takes more than 30 seconds, please report the issue on GitHub.",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
