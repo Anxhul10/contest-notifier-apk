@@ -6,51 +6,48 @@ import com.anxhul10.contest_notifier_apk.data.external.api.APICodeforces
 import com.anxhul10.contest_notifier_apk.data.external.api.LeetCodeAPI
 import com.anxhul10.contest_notifier_apk.data.external.dto.LeetCodeQueries
 import com.anxhul10.contest_notifier_apk.data.external.dto.LeetCodeRequest
+import com.anxhul10.contest_notifier_apk.model.GlobalContest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.Instant
 
-fun runner() {
+class RetrofitInstances {
+    val contests = mutableListOf<GlobalContest>();
 
-    val codechefAPI = Retrofit.Builder()
-        .baseUrl("https://www.codechef.com/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(APICodechef::class.java)
 
-    val codeforcesAPI = Retrofit.Builder()
-        .baseUrl("https://codeforces.com/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(APICodeforces::class.java)
+    suspend fun CodeforcesInstance() {
+        val codeforcesAPI = Retrofit.Builder()
+            .baseUrl("https://codeforces.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(APICodeforces::class.java)
 
-    val leetcodeAPI = Retrofit.Builder()
-        .baseUrl("https://leetcode.com/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(LeetCodeAPI::class.java)
-
-    CoroutineScope(Dispatchers.IO).launch {
-
-        try {
-
-            val response = leetcodeAPI.getContests(
-                LeetCodeRequest(
-                    query = LeetCodeQueries.UPCOMING_CONTESTS
-                )
-            )
-
-            response.data.contestV2UpcomingContests.forEach { contest ->
-
-                Log.d("LEETCODE", "Title: ${contest.title}")
-                Log.d("LEETCODE", "Start: ${contest.startTime}")
-                Log.d("LEETCODE", "Duration: ${contest.duration}")
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = codeforcesAPI.getContests()
+                if(response.status =="OK") {
+                    response.result.forEach {
+                        contest ->
+                        if(contest.relativeTimeSeconds < 0) {
+                            contests.add(
+                                GlobalContest(
+                                    name = contest.name,
+                                    platform = "codeforces",
+                                    contestDuration = contest.durationSeconds,
+                                    relativeTimeSeconds = contest.relativeTimeSeconds,
+                                    startTimeSeconds = contest.startTimeSeconds
+                                )
+                            )
+                        }
+                    }
+                }
+            } catch(e: Exception) {
+                Log.e("Retrofit Instance", "Codeforces API failed", e)
             }
-
-        } catch (e: Exception) {
-            Log.e("LEETCODE", "API Error", e)
         }
     }
 }
+
