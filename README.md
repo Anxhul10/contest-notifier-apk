@@ -42,6 +42,14 @@ That's why I built **Contest Notifier**. It brings contests from different platf
 
 I built this primarily to solve my own problem, but I hope it helps other competitive programmers avoid missing contests too.
 
+## API Documentation
+
+Contest Notifier uses APIs to fetch contest information from Codeforces, CodeChef, and LeetCode.
+
+You can explore the API endpoints and their documentation here:
+
+**[View API Documentation](https://documenter.getpostman.com/view/36479095/2sBYHYuJEF)**
+
 ## Screenshots
 
 ### Notifications
