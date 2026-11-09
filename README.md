@@ -1,10 +1,29 @@
 # Contest Notifier
 
-**Never miss a coding contest again!**
+Contest Notifier is an Android app that shows upcoming coding contests from different platforms in one place and sends reminders before they start.
 
-Contest Notifier is an Android app that brings upcoming coding contests from multiple competitive programming platforms into one place and reminds you before they begin.
+## Screenshots
 
-Have you ever registered for a coding contest, only to forget about it when the actual contest starts? That happened to me, too. Contest Notifier was built to solve exactly this problem.
+<table>
+  <tr>
+    <td align="center">
+      <strong>Notifications</strong><br>
+      <img src="https://github.com/user-attachments/assets/52a95a1a-0dbd-4400-a140-30441ba6aae8" width="220">
+    </td>
+    <td align="center">
+      <strong>Light Mode</strong><br>
+      <img src="https://github.com/user-attachments/assets/3e0f0e19-819b-488e-83c9-880b15ddbdf4" width="220">
+    </td>
+    <td align="center">
+      <strong>Dark Mode</strong><br>
+      <img src="https://github.com/user-attachments/assets/0c40c124-a8c0-4c22-b736-b67352ff5f6a" width="220">
+    </td>
+    <td align="center">
+      <strong>Loading</strong><br>
+      <img src="https://github.com/user-attachments/assets/d49d336b-e62e-4481-ac9d-0f2ebc0d69f8" width="220">
+    </td>
+  </tr>
+</table>
 
 ## Download
 
@@ -32,7 +51,7 @@ You can also browse all previous versions on the [GitHub Releases page](https://
 
 ## Why I Built This
 
-As someone who participates in competitive programming, I sometimes register for coding contests but forget to actually attend them.
+As someone who participates in competitive programming, I sometimes register for coding contests but sometimes forgets to actually attend them.
 
 I might register on Codeforces, LeetCode, or CodeChef, go about my day, and completely forget that a contest is scheduled. Sometimes, I only remember after the contest has already ended!
 
@@ -40,7 +59,7 @@ I wanted a simple solution that would take care of remembering contest schedules
 
 That's why I built **Contest Notifier**. It brings contests from different platforms into one place and sends reminders before they start, helping me stay consistent with competitive programming.
 
-I built this primarily to solve my own problem, but I hope it helps other competitive programmers avoid missing contests too.
+I built this primarily to solve my own problem, but I hope it helps other programmers as well.
 
 ## API Documentation
 
@@ -49,26 +68,6 @@ Contest Notifier uses APIs to fetch contest information from Codeforces, CodeChe
 You can explore the API endpoints and their documentation here:
 
 **[View API Documentation](https://documenter.getpostman.com/view/36479095/2sBYHYuJEF)**
-
-## Screenshots
-
-### Notifications
-
-Contest Notifier schedules local notifications on your device, including reminders before a contest starts.
-
-![Contest Notifier notification](https://github.com/user-attachments/assets/52a95a1a-0dbd-4400-a140-30441ba6aae8)
-
-### Light Mode
-
-The app supports a clean light theme.
-
-![Contest Notifier in light mode](https://github.com/user-attachments/assets/7948ba2a-e00b-46b2-873e-67534cc3e490)
-
-### Dark Mode
-
-You can also browse upcoming contests using the dark theme.
-
-![Contest Notifier in dark mode](https://github.com/user-attachments/assets/3817381b-bbe7-4225-8951-91850d31d750)
 
 ## Contributions
 
